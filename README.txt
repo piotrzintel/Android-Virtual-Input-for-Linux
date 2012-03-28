@@ -146,7 +146,8 @@ Alt-Tab shortcut.
 -- BUGS AND PROBLEMS --
 
 
-The project has been tested only on a limited number of machines so if it does not work for you, please send me an e-mail and I'll try to fix it.
+The project has been tested only on a limited number of machines so if it does not work for you, please send me an e-mail to zintelpiotr@gmail.com
+and I'll try to fix it.
 
 AndClient application has been tested only on Samsung i5700 with 320x480 resolution and at the moment keyboard is limited to vertical layout.
 
