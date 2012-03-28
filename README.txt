@@ -1,5 +1,4 @@
 Android Virtual Input for Linux
-https://github.com/piotrzintel/Android-Virtual-Input-for-Linux
 
 The project aims at creating a way to control a Linux-based system with an Android phone over wi-fi.
 It differs from existing projects by simulating input at kernel level so that from system's perspective

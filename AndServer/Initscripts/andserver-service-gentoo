@@ -1,0 +1,37 @@
+#!/sbin/runscript
+
+depend() {
+	need logger
+	need dbus
+	need udev
+	need localmount
+	need net
+}
+
+start() {
+	if [ "${RC_CMD}" = "restart" ];
+	then
+		sleep 5
+	fi
+
+	ebegin "Starting AndServer"
+#	mknod /dev/avms c 60 0
+#	mknod /dev/avkbd c 61 0
+	start-stop-daemon --start --exec AndServer
+	eend $?
+}
+
+stop() {
+	ebegin "Stopping AndServer"
+	rm -rf /dev/avms
+	rm -rf /dev/avkbd
+	start-stop-daemon --stop --exec AndServer
+	eend $?
+}
+
+extra_commands="restartdelay"
+restartdelay() {
+	stop
+	sleep 10
+	start
+}

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <View
+        android:id="@+id/touchPad"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/viewTouchpadScrollHorizontal"
+        android:layout_toLeftOf="@+id/viewTouchpadScrollVertical" />
+    
+    <Button
+        android:id="@+id/buttonTouchpadRMB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/buttonTouchpadMMB"
+        android:layout_toRightOf="@+id/buttonTouchpadMMB"
+        android:text="" />
+
+    <Button
+        android:id="@+id/buttonTouchpadMMB"
+        android:layout_width="75dp"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="" />
+
+    <Button
+        android:id="@+id/buttonTouchpadLMB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/buttonTouchpadMMB"
+        android:layout_toLeftOf="@+id/buttonTouchpadMMB"
+        android:text="" />
+
+    <View
+        android:id="@+id/viewTouchpadScrollVertical"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/viewTouchpadScrollHorizontal"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true" />
+
+    <View
+        android:id="@+id/viewTouchpadScrollHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_above="@+id/buttonTouchpadMMB"
+        android:layout_alignParentLeft="true" />
+
+    <View
+        android:id="@+id/viewTouchpadOverlay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" />
+    
+</RelativeLayout>

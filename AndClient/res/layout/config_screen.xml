@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <EditText
+        android:id="@+id/editTextServerIP"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/textViewServerIP"
+        android:singleLine="true" >
+
+        <requestFocus />
+    </EditText>
+
+    <TextView
+        android:id="@+id/textViewServerIP"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/editTextServerIP"
+        android:layout_alignBottom="@+id/editTextServerIP"
+        android:layout_alignParentLeft="true"
+        android:text="Server IP"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <EditText
+        android:id="@+id/editTextMousePort"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/editTextKeyboardPort"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/editTextServerIP"
+        android:singleLine="true" />
+
+    <TextView
+        android:id="@+id/textViewMousePort"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/editTextMousePort"
+        android:layout_alignBottom="@+id/editTextMousePort"
+        android:layout_alignParentLeft="true"
+        android:text="Mouse port"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <EditText
+        android:id="@+id/editTextKeyboardPort"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/editTextMousePort"
+        android:layout_toRightOf="@+id/textViewKeyboardPort"
+        android:singleLine="true" />
+
+    <TextView
+        android:id="@+id/textViewKeyboardPort"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/editTextKeyboardPort"
+        android:layout_alignBottom="@+id/editTextKeyboardPort"
+        android:layout_alignParentLeft="true"
+        android:text="Keyboard port"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <Button
+        android:id="@+id/buttonSaveSettings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/editTextKeyboardPort"
+        android:layout_marginTop="60dp"
+        android:text="Save settings" />
+
+    <TextView
+        android:id="@+id/textViewSaveData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editTextKeyboardPort"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="22dp"
+        android:text="Medium Text"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:visibility="invisible" />
+
+</RelativeLayout>

@@ -1,0 +1,24 @@
+# AndServer example configuration file
+# uncomment any of the [parameter] [option] lines and edit them to your needs
+
+# maximum number of connections
+#max-connections 2 
+
+# define mouse listening port
+#mouse-port 6781 
+
+# define keyboard listening port
+#keyboard-port 6780 
+
+# path to file containing server private key
+#private-key-file /path_to_file/server.pem 
+
+# path to file containing server certificate
+#certificate-file /path_to_file/server.pem 
+
+# mouse character special file
+#mouse-device-file /dev/avms 
+
+# keyboard character special file 
+#keyboard-device-file /dev/avkbd
+

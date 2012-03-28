@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.andclient"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk android:minSdkVersion="7" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+<!--<uses-feature android:name="android.hardware.touchscreen.multitouch.distinct"
+        		  android:required="true"/> -->
+
+    <application
+        android:label="@string/app_name" >
+        <service
+            android:name="com.andclient.ConnectionService"/>
+        
+        <activity
+            android:label="@string/app_name"
+            android:name=".StartActivity"
+            android:theme="@android:style/Theme.NoTitleBar">
+            <intent-filter >
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        
+        <activity
+            android:name="SetupConnectionActivity"
+            android:noHistory="true"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:exported="false">
+        </activity>
+        
+        <activity
+            android:name="TouchpadActivity"
+            android:noHistory="true"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:exported="false">
+        </activity>
+        
+        <activity
+            android:name="KeyboardActivity"
+            android:noHistory="true"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:screenOrientation="portrait"
+            android:exported="false">
+        </activity>
+    </application>
+
+</manifest>

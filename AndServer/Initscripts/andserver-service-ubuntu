@@ -1,0 +1,16 @@
+# andserver-service-ubuntu job file
+
+description     "Initialize AndServer service"
+
+start on (net-device-up IFACE!=lo)
+
+expect fork
+
+stop on runlevel[016]
+
+pre-start script
+	echo "Starting AndServer"
+end script
+
+exec AndServer
+
