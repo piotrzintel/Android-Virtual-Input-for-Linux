@@ -66,7 +66,14 @@ public class SetupConnectionActivity extends Activity {
 				saveSettingsOnClick(v);
 			}
 		});
+        
+        setElementsSize();
     }
+	
+	private void setElementsSize()
+	{
+		
+	}
 	
 	private void saveSettingsOnClick(View v)
 	{		
@@ -76,7 +83,7 @@ public class SetupConnectionActivity extends Activity {
 		String ip = et.getText().toString();
 		boolean correctIp = InetAddressUtils.isIPv4Address(ip);
 		if (!correctIp) {
-			Toast.makeText(SetupConnectionActivity.this, "Server IP is not a correct IPv4 address", 5).show();
+			Toast.makeText(SetupConnectionActivity.this, "Server IP is not a correct IPv4 address", Toast.LENGTH_SHORT).show();
 		}
 		
 		et = (EditText) findViewById(R.id.editTextMousePort);
@@ -85,10 +92,10 @@ public class SetupConnectionActivity extends Activity {
 			try {
 				mousePort = Integer.parseInt(txt);
 			} catch (NumberFormatException e) {
-				Toast.makeText(SetupConnectionActivity.this, "Mouse port is not a number", 5).show();
+				Toast.makeText(SetupConnectionActivity.this, "Mouse port is not a number", Toast.LENGTH_SHORT).show();
 			}
 			if (mousePort < 0) {
-				Toast.makeText(SetupConnectionActivity.this, "Mouse port must be greater than 0", 5).show();
+				Toast.makeText(SetupConnectionActivity.this, "Mouse port must be greater than 0", Toast.LENGTH_SHORT).show();
 			}
 		}
 		
@@ -98,10 +105,10 @@ public class SetupConnectionActivity extends Activity {
 			try {
 				keyboardPort = Integer.parseInt(txt);
 			} catch (NumberFormatException e) {
-				Toast.makeText(SetupConnectionActivity.this, "Keyboard port must be an integer", 5).show();
+				Toast.makeText(SetupConnectionActivity.this, "Keyboard port must be an integer", Toast.LENGTH_SHORT).show();
 			}
 			if (keyboardPort < 0) {
-				Toast.makeText(SetupConnectionActivity.this, "Keyboard port must be greater than 0", 5).show();
+				Toast.makeText(SetupConnectionActivity.this, "Keyboard port must be greater than 0", Toast.LENGTH_SHORT).show();
 			}
 		}
 		

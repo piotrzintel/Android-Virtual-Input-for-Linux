@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-	<item 	android:id="@+id/startScreen"
+	<!-- <item 	android:id="@+id/startScreen"
 	    	android:title="Main screen"/>
-	
+	-->
 	<item 	android:id="@+id/touchpadScreen"
 	    	android:title="Touchpad"/>
 	

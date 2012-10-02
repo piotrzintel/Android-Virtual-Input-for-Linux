@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/viewTouchpadScrollHorizontal"
         android:layout_toLeftOf="@+id/viewTouchpadScrollVertical" />
-    
+
     <Button
         android:id="@+id/buttonTouchpadRMB"
         android:layout_width="wrap_content"

@@ -4,7 +4,8 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
-    <uses-sdk android:minSdkVersion="7" />
+    <uses-sdk android:minSdkVersion="7"
+        	  android:targetSdkVersion="7" />
     <uses-permission android:name="android.permission.INTERNET"/>
 <!--<uses-feature android:name="android.hardware.touchscreen.multitouch.distinct"
         		  android:required="true"/> -->
@@ -20,7 +21,6 @@
             android:theme="@android:style/Theme.NoTitleBar">
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -43,7 +43,6 @@
             android:name="KeyboardActivity"
             android:noHistory="true"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:screenOrientation="portrait"
             android:exported="false">
         </activity>
     </application>

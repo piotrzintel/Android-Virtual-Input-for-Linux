@@ -51,11 +51,11 @@ public class ConnectionService extends Service {
 	private KeyboardConnectionHandler mKeyboardConnectionHandler = null;
 	private SharedPreferences settings;
 	
-	private Looper mMouseServiceLooper;
-	private Looper mKeyboardServiceLooper;
+	private static Looper mMouseServiceLooper;
+	private static Looper mKeyboardServiceLooper;
 	
-	private ServiceHandler mMouseServiceHandler;
-	private ServiceHandler mKeyboardServiceHandler;
+	private static ServiceHandler mMouseServiceHandler;
+	private static ServiceHandler mKeyboardServiceHandler;
 	
 	private final class ServiceHandler extends Handler {
 		public ServiceHandler(Looper looper) {

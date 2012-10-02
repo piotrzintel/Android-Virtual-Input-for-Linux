@@ -162,12 +162,12 @@ public class TouchpadActivity extends Activity {
         switch (item.getItemId()) {
             case R.id.touchpadScreen:
                 return true;
-                
+                /*
             case R.id.startScreen:
                 intent = new Intent(this, StartActivity.class);
                 startActivity(intent);
                 return true;
-                
+                */
             case R.id.keyboardScreen:
             	intent = new Intent(this, KeyboardActivity.class);
             	startActivity(intent);

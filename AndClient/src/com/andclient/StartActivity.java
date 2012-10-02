@@ -91,9 +91,9 @@ public class StartActivity extends Activity {
 					if (s != null) {
 						m = m + "\n" +s;
 					}
-					Toast.makeText(StartActivity.this, m, 5).show();
+					Toast.makeText(StartActivity.this, m, Toast.LENGTH_SHORT).show();
 				} else if (action.equals(ConnectionService.CONNECTION_LOST_INTENT)) {
-					Toast.makeText(StartActivity.this, "Connection lost", 5);
+					Toast.makeText(StartActivity.this, "Connection lost", Toast.LENGTH_SHORT).show();
 				}
 				
 				if (mProgressDialog != null) {
@@ -209,7 +209,7 @@ public class StartActivity extends Activity {
 	    	Bundle b = getIntent().getExtras();
 	    	if (b != null) {
 	    		if (b.getBoolean("ConnectionLost")) {
-	    			Toast.makeText(StartActivity.this, "Connection lost!", 5).show();
+	    			Toast.makeText(StartActivity.this, "Connection lost!", Toast.LENGTH_SHORT).show();
 	    		}
 	    	}
 	    	setIntent(null);

@@ -49,6 +49,7 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManagerFactory;
 
+import android.os.Environment;
 import android.util.Log;
 
 public class ConnectionHandler {
@@ -72,7 +73,7 @@ public class ConnectionHandler {
 		
 		try {
 			KeyStore trustStore = KeyStore.getInstance("BKS");
-			FileInputStream trustIfstream = new FileInputStream("/sdcard/andserver.bks");
+			FileInputStream trustIfstream = new FileInputStream(Environment.getExternalStorageDirectory().getPath() + "/andserver.bks");
 						
 			SSLContext sslContext = SSLContext.getInstance("TLSV1");
 			
@@ -98,7 +99,7 @@ public class ConnectionHandler {
 			
 		} catch (IOException e) {
 			Log.e("ConnectionHandler", "2012-03-02 23:01:26 " + e.toString());
-			throw new IOException("Certificate file /sdcard/andserver.bks not found");
+			throw new IOException("Certificate file " + Environment.getExternalStorageDirectory().getPath() + "/andserver.bks not found");
 		} catch (KeyStoreException e) {
 			Log.e("ConnectionHandler", "2012-03-02 23:01:26 " + e.toString());
 			throw new Exception("Error preparing server certificate");

@@ -10,7 +10,9 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/textViewServerIP"
-        android:singleLine="true" >
+        android:singleLine="true"
+        android:inputType="numberDecimal"
+        android:digits="1234567890.">
 
         <requestFocus />
     </EditText>
@@ -32,7 +34,8 @@
         android:layout_alignLeft="@+id/editTextKeyboardPort"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/editTextServerIP"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:inputType="number"/>
 
     <TextView
         android:id="@+id/textViewMousePort"
@@ -51,7 +54,8 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/editTextMousePort"
         android:layout_toRightOf="@+id/textViewKeyboardPort"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:inputType="number" />
 
     <TextView
         android:id="@+id/textViewKeyboardPort"

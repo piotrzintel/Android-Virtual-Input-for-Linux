@@ -53,12 +53,14 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 
 public class KeyboardActivity extends Activity {
 	private ConnectionReceiver mConnectionReceiver = new ConnectionReceiver();
-	private ArrayList<Byte> switcherList;
+	private ArrayList<Byte> mSwitcherList;
 	
 	private Looper mAltQueueLooper;
 	private AltQueueHandler mAltQueueHandler;
 	
-	private final class AltQueueHandler extends Handler {
+	private static final class AltQueueHandler extends Handler {
+		//private final WeakReference<>
+		
 		public AltQueueHandler(Looper looper) {
 			super(looper);
 		}
@@ -82,9 +84,9 @@ public class KeyboardActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.keyboard_screen);
-        switcherList = new ArrayList<Byte>();
+        mSwitcherList = new ArrayList<Byte>();
         
-        HandlerThread thread = new HandlerThread("MouseConnectionServiceHandlerThread", Process.THREAD_PRIORITY_BACKGROUND);
+        HandlerThread thread = new HandlerThread("KeyboardAltButtonTurnOffThread", Process.THREAD_PRIORITY_BACKGROUND);
 		thread.start();
 		mAltQueueLooper = thread.getLooper();
 		mAltQueueHandler = new AltQueueHandler(mAltQueueLooper);
@@ -287,12 +289,12 @@ public class KeyboardActivity extends Activity {
             	intent = new Intent(this, TouchpadActivity.class);
             	startActivity(intent);
                 return true;
-                
+            /*    
             case R.id.startScreen:
                 intent = new Intent(this, StartActivity.class);
                 startActivity(intent);
                 return true;
-                
+              */  
             case R.id.keyboardScreen:
             	return true;
                 
@@ -309,15 +311,15 @@ public class KeyboardActivity extends Activity {
 			@Override
 			public void run() {
 				int i = 0;
-				byte[] messagePre = new byte[switcherList.size()];
-				for (Byte b : switcherList) {
+				byte[] messagePre = new byte[mSwitcherList.size()];
+				for (Byte b : mSwitcherList) {
 					messagePre[i++] = b;
 				}
 				
-				byte[] messagePost = new byte[switcherList.size()];
+				byte[] messagePost = new byte[mSwitcherList.size()];
 				i = messagePost.length;
 				
-				for (Byte b : switcherList) {
+				for (Byte b : mSwitcherList) {
 					messagePost[--i] = (byte)(b + 64);
 				}
 				
@@ -340,14 +342,14 @@ public class KeyboardActivity extends Activity {
 	private boolean buttonOnClick(View v, byte key) {
 		v.setPressed(true);
 		int i = 0;
-		byte[] message = new byte[2 + 2*switcherList.size()];
-		for (Byte b : switcherList) {
+		byte[] message = new byte[2 + 2*mSwitcherList.size()];
+		for (Byte b : mSwitcherList) {
 			message[i++] = b;
 		}
 		message[i++] = key;
 		message[i++] = (byte)(key + 64);
 		i = message.length;
-		for (Byte b : switcherList) {
+		for (Byte b : mSwitcherList) {
 			message[--i] = (byte)(b + 64);
 		}
 		try {
@@ -363,16 +365,16 @@ public class KeyboardActivity extends Activity {
 	private boolean buttonTabOnClick(View v, final byte key) {
 		v.setPressed(true);
 		int i = 0;
-		byte[] message = new byte[2 + switcherList.size()];
-		final byte[] messagePost = new byte[switcherList.size()];
-		for (Byte b : switcherList) {
+		byte[] message = new byte[2 + mSwitcherList.size()];
+		final byte[] messagePost = new byte[mSwitcherList.size()];
+		for (Byte b : mSwitcherList) {
 			message[i++] = b;
 		}
 		message[i++] = key;
 		message[i++] = (byte)(key + 64);
 		
 		i = messagePost.length;
-		for (Byte b : switcherList) {
+		for (Byte b : mSwitcherList) {
 			messagePost[--i] = (byte)(b + 64);
 		}
 		try {
@@ -401,9 +403,9 @@ public class KeyboardActivity extends Activity {
 	
 	private void toggleButtonOnCheckChange(View v, boolean isChecked, byte key) {
 		if ( isChecked ) {
-			switcherList.add(new Byte(key));
+			mSwitcherList.add(new Byte(key));
 		} else {
-			switcherList.remove(new Byte(key));
+			mSwitcherList.remove(new Byte(key));
 		}
 	}
 }
