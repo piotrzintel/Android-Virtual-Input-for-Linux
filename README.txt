@@ -149,8 +149,7 @@ Alt-Tab shortcut.
 The project has been tested only on a limited number of machines so if it does not work for you, please send me an e-mail to zintelpiotr@gmail.com
 and I'll try to fix it.
 
-AndClient application has been tested only on Samsung i5700 with 320x480 resolution and at the moment keyboard is limited to vertical layout.
-
+AndClient application has been tested on Samsung i5700 with 320x480 resolution and Samsung i9070 with 480x800 resolution, but should work on any resolution.
 
 -- LIMITATIONS --
 
