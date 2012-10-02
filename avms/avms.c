@@ -40,7 +40,7 @@
 #include <linux/types.h>
 #include <linux/proc_fs.h>
 #include <linux/fcntl.h>
-#include <asm/system.h>
+//#include <asm/system.h>
 #include <linux/cdev.h>
 
 #ifndef avms_MAJOR
