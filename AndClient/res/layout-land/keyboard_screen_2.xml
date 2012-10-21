@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        >
+        
+        <ToggleButton
+	        android:id="@+id/toggleButtonCTRL2"
+	        android:layout_width="0dp"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1"
+	        android:text="LCtrl"
+	        android:textOff="Ctrl"
+	        android:textOn="Ctrl" />
+	
+	    <ToggleButton
+	        android:id="@+id/toggleButtonSHIFT2"
+	        android:layout_width="0dp"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1"
+	        android:text="LShift"
+	        android:textOff="Shift"
+	        android:textOn="Shift" />
+	
+	    <ToggleButton
+	        android:id="@+id/toggleButtonALT2"
+	        android:layout_width="0dp"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1"
+	        android:text="LAlt"
+	        android:textOff="Alt"
+	        android:textOn="Alt" />
+	
+	    <ToggleButton
+	        android:id="@+id/toggleButtonMETA2"
+	        android:layout_width="0dp"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1"
+	        android:text="Win"
+	        android:textOff="Win"
+	        android:textOn="Win" />
+	    <Button
+	        android:id="@+id/buttonNextKeyboard2"
+	        android:layout_width="0dp"
+	        android:layout_height="fill_parent"
+	        android:text="Next keyboard page" 
+	        android:layout_weight="1"/>
+
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        >
+        
+        <Button
+	        android:id="@+id/buttonKeyTAB2"
+	        android:layout_width="0dp"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="2"
+	        android:text="Tab" />
+	
+	    <Button
+	        android:id="@+id/buttonKeyENTER2"
+	        android:layout_width="0dp"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="2"
+	        android:text="Enter" />
+	    
+	    <Button
+	        android:id="@+id/buttonKeyMute"
+	        android:layout_width="0dp"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1"
+	        android:text="Mute" />
+	
+	    <Button
+	        android:id="@+id/buttonKeyVolDown"
+	        android:layout_width="0dp"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1"
+	        android:text="--vol" />
+	    
+        <Button
+	        android:id="@+id/buttonKeyVolUp"
+	        android:layout_width="0dp"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1"
+	        android:text="++vol" />
+	    
+        
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        >
+    
+	   <Button
+	        android:id="@+id/buttonKeyHome2"
+	        android:layout_width="0dp"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1"
+	        android:text="Home" />
+        
+        <Button
+	        android:id="@+id/buttonKeyUp"
+	        android:layout_width="0dp"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1"
+	        android:text="&#47;&#92;" />
+
+        <Button
+	        android:id="@+id/buttonKeyEnd2"
+	        android:layout_width="0dp"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1"
+	        android:text="End" />
+            
+	    <Button
+	        android:id="@+id/buttonKeyPgUp2"
+	        android:layout_width="0dp"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1"
+	        android:text="PgUp" />
+	    
+	    <Button
+	        android:id="@+id/buttonKeyPlayPause"
+	        android:layout_width="0dp"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="2"
+	        android:text="|&gt;" />
+
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        >
+    
+	    <Button
+	        android:id="@+id/buttonKeyLeft"
+	        android:layout_width="0dp"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1"
+	        android:text="&lt;" />
+	
+	    <Button
+	        android:id="@+id/buttonKeyDown"
+	        android:layout_width="0dp"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1"
+	        android:text="&#92;/" />
+	
+	    <Button
+	        android:id="@+id/buttonKeyRight"
+	        android:layout_width="0dp"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1"
+	        android:text="&gt;" />
+	    
+	    <Button
+	        android:id="@+id/buttonKeyPgDn2"
+	        android:layout_width="0dp"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1"
+	        android:text="PgDn" />
+	    
+	    <Button
+	        android:id="@+id/buttonKeyPrev"
+	        android:layout_width="0dp"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1"
+	        android:text="|&lt;&lt;" />
+	    
+	    <Button
+	        android:id="@+id/buttonKeyNext"
+	        android:layout_width="0dp"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1"
+	        android:text="&gt;&gt;|" />
+	
+    </LinearLayout>
+
+</LinearLayout>
