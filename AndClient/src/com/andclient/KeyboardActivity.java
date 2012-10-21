@@ -50,6 +50,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ToggleButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.ViewAnimator;
 
 public class KeyboardActivity extends Activity {
 	private ConnectionReceiver mConnectionReceiver = new ConnectionReceiver();
@@ -57,6 +58,9 @@ public class KeyboardActivity extends Activity {
 	
 	private Looper mAltQueueLooper;
 	private AltQueueHandler mAltQueueHandler;
+	
+	private ViewAnimator mKeyboardViewAnimator;
+	private int mDisplayedChild;
 	
 	private static final class AltQueueHandler extends Handler {
 		//private final WeakReference<>
@@ -77,182 +81,17 @@ public class KeyboardActivity extends Activity {
 				startActivity(i);
 			}
 		}
-		
 	}
-	
+
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.keyboard_screen);
         mSwitcherList = new ArrayList<Byte>();
         
-        HandlerThread thread = new HandlerThread("KeyboardAltButtonTurnOffThread", Process.THREAD_PRIORITY_BACKGROUND);
-		thread.start();
-		mAltQueueLooper = thread.getLooper();
-		mAltQueueHandler = new AltQueueHandler(mAltQueueLooper);
+        prepareLayoutAnimator();
         
-        Button button = (Button) findViewById(R.id.buttonSend);
+        prepareButtonListeners();
         
-        button.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				buttonSendOnClick(v);
-			}
-		});
-        
-        button = (Button) findViewById(R.id.buttonKeyTAB);
-        
-        button.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				buttonTabOnClick(v, MessageTypes.KEY_TAB);
-			}
-		});
-        
-        
-        button = (Button) findViewById(R.id.buttonKeyENTER);
-        
-        button.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				buttonOnClick(v, MessageTypes.KEY_ENTER);
-			}
-		});
-        
-        button = (Button) findViewById(R.id.buttonKeyESC);
-        
-        button.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				buttonOnClick(v, MessageTypes.KEY_ESC);	
-			}
-		});
-        
-        button = (Button) findViewById(R.id.buttonKeyDELETE);
-        
-        button.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				buttonOnClick(v, MessageTypes.KEY_DELETE);	
-			}
-		});
-        
-        button = (Button) findViewById(R.id.buttonKeyBACKSPACE);
-        
-        button.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				buttonOnClick(v, MessageTypes.KEY_BACKSPACE);	
-			}
-		});
-        
-        button = (Button) findViewById(R.id.buttonKeyF1);
-        
-        button.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				buttonOnClick(v, MessageTypes.KEY_F1);	
-			}
-		});
-        
-        button = (Button) findViewById(R.id.buttonKeyF2);
-        
-        button.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				buttonOnClick(v, MessageTypes.KEY_F2);	
-			}
-		});
-        
-        button = (Button) findViewById(R.id.buttonKeyF4);
-        
-        button.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				buttonOnClick(v, MessageTypes.KEY_F4);	
-			}
-		});
-        
-        button = (Button) findViewById(R.id.buttonKeyF5);
-        
-        button.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				buttonOnClick(v, MessageTypes.KEY_F5);	
-			}
-		});
-        
-        button = (Button) findViewById(R.id.buttonKeyHOME);
-        
-        button.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				buttonOnClick(v, MessageTypes.KEY_HOME);	
-			}
-		});
-        
-        button = (Button) findViewById(R.id.buttonKeyEND);
-        
-        button.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				buttonOnClick(v, MessageTypes.KEY_END);	
-			}
-		});
-        
-        button = (Button) findViewById(R.id.buttonKeyPGUP);
-        
-        button.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				buttonOnClick(v, MessageTypes.KEY_PAGEUP);	
-			}
-		});
-        
-        button = (Button) findViewById(R.id.buttonKeyPGDN);
-        
-        button.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				buttonOnClick(v, MessageTypes.KEY_PAGEDOWN);	
-			}
-		});
-        
-        ToggleButton togglebutton = (ToggleButton) findViewById(R.id.toggleButtonALT);
-        
-        togglebutton.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				toggleButtonOnCheckChange(buttonView, isChecked, MessageTypes.KEY_LALT);
-			}
-		});
-        
-        togglebutton = (ToggleButton) findViewById(R.id.ToggleButtonCTRL);
-        
-        togglebutton.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				toggleButtonOnCheckChange(buttonView, isChecked, MessageTypes.KEY_LCTRL);
-			}
-		});
-        
-        togglebutton = (ToggleButton) findViewById(R.id.ToggleButtonSHIFT);
-        
-        togglebutton.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				toggleButtonOnCheckChange(buttonView, isChecked, MessageTypes.KEY_LSHIFT);
-			}
-		});
-        
-        togglebutton = (ToggleButton) findViewById(R.id.toggleButtonMETA);
-        
-        togglebutton.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				toggleButtonOnCheckChange(buttonView, isChecked, MessageTypes.KEY_META);
-			}
-		});
     }
 	
 	@Override
@@ -289,12 +128,7 @@ public class KeyboardActivity extends Activity {
             	intent = new Intent(this, TouchpadActivity.class);
             	startActivity(intent);
                 return true;
-            /*    
-            case R.id.startScreen:
-                intent = new Intent(this, StartActivity.class);
-                startActivity(intent);
-                return true;
-              */  
+                
             case R.id.keyboardScreen:
             	return true;
                 
@@ -302,7 +136,11 @@ public class KeyboardActivity extends Activity {
                 return super.onOptionsItemSelected(item);
         }
     }
-	
+
+    public Object onRetainNonConfigurationInstance() {
+    	return Integer.valueOf(mDisplayedChild);
+    }
+    
 	private boolean buttonSendOnClick(View v) {
 		v.setPressed(true);
 		final EditText et = (EditText) findViewById(R.id.editTextMessage);
@@ -407,5 +245,408 @@ public class KeyboardActivity extends Activity {
 		} else {
 			mSwitcherList.remove(new Byte(key));
 		}
+	}
+	
+	private void prepareLayoutAnimator() {
+        mKeyboardViewAnimator = new ViewAnimator(this);
+        
+        View v1 = View.inflate(this, R.layout.keyboard_screen_1, null);
+        View v2 = View.inflate(this, R.layout.keyboard_screen_2, null);
+        
+        mKeyboardViewAnimator.addView(v1, 0);
+        mKeyboardViewAnimator.addView(v2, 1);
+        
+        Object lastNonConfigurationInstance = getLastNonConfigurationInstance();
+        if ( lastNonConfigurationInstance != null ) {
+        	mDisplayedChild = (Integer)lastNonConfigurationInstance;
+        	mKeyboardViewAnimator.setDisplayedChild(mDisplayedChild);
+        } else {
+        	mDisplayedChild = mKeyboardViewAnimator.getDisplayedChild();
+        }
+        
+        setContentView(mKeyboardViewAnimator);
+	}
+	
+	private void prepareButtonListeners() {
+		
+        HandlerThread thread = new HandlerThread("KeyboardAltButtonTurnOffThread", Process.THREAD_PRIORITY_BACKGROUND);
+		thread.start();
+		mAltQueueLooper = thread.getLooper();
+		mAltQueueHandler = new AltQueueHandler(mAltQueueLooper);
+        
+		///////////////////////
+		// FIRST SCREEN
+		
+        Button button = (Button) findViewById(R.id.buttonSend);
+        
+        button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				buttonSendOnClick(v);
+			}
+		});
+        
+        button = (Button) findViewById(R.id.buttonKeyTAB);
+        
+        button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				buttonTabOnClick(v, MessageTypes.KEY_TAB);
+			}
+		});
+        
+        
+        button = (Button) findViewById(R.id.buttonKeyENTER);
+        
+        button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				buttonOnClick(v, MessageTypes.KEY_ENTER);
+			}
+		});
+        
+        button = (Button) findViewById(R.id.buttonKeyESC);
+        
+        button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				buttonOnClick(v, MessageTypes.KEY_ESC);	
+			}
+		});
+        
+        button = (Button) findViewById(R.id.buttonKeyDELETE);
+        
+        button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				buttonOnClick(v, MessageTypes.KEY_DELETE);	
+			}
+		});
+        
+        button = (Button) findViewById(R.id.buttonKeyBACKSPACE);
+        
+        button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				buttonOnClick(v, MessageTypes.KEY_BACKSPACE);	
+			}
+		});
+        
+        button = (Button) findViewById(R.id.buttonKeyF1);
+        
+        button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				buttonOnClick(v, MessageTypes.KEY_F1);	
+			}
+		});
+        
+        button = (Button) findViewById(R.id.buttonKeyF2);
+        
+        button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				buttonOnClick(v, MessageTypes.KEY_F2);	
+			}
+		});
+        
+        button = (Button) findViewById(R.id.buttonKeyF4);
+        
+        button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				buttonOnClick(v, MessageTypes.KEY_F4);	
+			}
+		});
+        
+        button = (Button) findViewById(R.id.buttonKeyF5);
+        
+        button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				buttonOnClick(v, MessageTypes.KEY_F5);	
+			}
+		});
+        
+        button = (Button) findViewById(R.id.buttonKeyHOME);
+        
+        button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				buttonOnClick(v, MessageTypes.KEY_HOME);	
+			}
+		});
+        
+        button = (Button) findViewById(R.id.buttonKeyEND);
+        
+        button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {				
+				buttonOnClick(v, MessageTypes.KEY_END);	
+			}
+		});
+
+        button = (Button) findViewById(R.id.buttonNextKeyboard);
+        
+        button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mDisplayedChild++;
+				mDisplayedChild %= 2;
+				
+				mKeyboardViewAnimator.setDisplayedChild(mDisplayedChild);
+			}
+		});
+        
+        button = (Button) findViewById(R.id.buttonKeyPGUP);
+        
+        button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				buttonOnClick(v, MessageTypes.KEY_PAGEUP);	
+			}
+		});
+        
+        button = (Button) findViewById(R.id.buttonKeyPGDN);
+        
+        button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				buttonOnClick(v, MessageTypes.KEY_PAGEDOWN);	
+			}
+		});
+        
+        ToggleButton togglebutton = (ToggleButton) findViewById(R.id.toggleButtonALT);
+        
+        togglebutton.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				toggleButtonOnCheckChange(buttonView, isChecked, MessageTypes.KEY_LALT);
+			}
+		});
+        
+        togglebutton = (ToggleButton) findViewById(R.id.toggleButtonCTRL);
+        
+        togglebutton.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				toggleButtonOnCheckChange(buttonView, isChecked, MessageTypes.KEY_LCTRL);
+			}
+		});
+        
+        togglebutton = (ToggleButton) findViewById(R.id.toggleButtonSHIFT);
+        
+        togglebutton.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				toggleButtonOnCheckChange(buttonView, isChecked, MessageTypes.KEY_LSHIFT);
+			}
+		});
+        
+        togglebutton = (ToggleButton) findViewById(R.id.toggleButtonMETA);
+        
+        togglebutton.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				toggleButtonOnCheckChange(buttonView, isChecked, MessageTypes.KEY_META);
+			}
+		});
+        
+        // END FIRST SCREEN
+        
+        ///////////////////////
+        // SECOND SCREEN
+        
+        button = (Button) findViewById(R.id.buttonNextKeyboard2);
+        
+        button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mDisplayedChild++;
+				mDisplayedChild %= 2;
+				
+				mKeyboardViewAnimator.setDisplayedChild(mDisplayedChild);
+			}
+		});
+        
+        togglebutton = (ToggleButton) findViewById(R.id.toggleButtonALT2);
+        
+        togglebutton.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				toggleButtonOnCheckChange(buttonView, isChecked, MessageTypes.KEY_LALT);
+			}
+		});
+        
+        togglebutton = (ToggleButton) findViewById(R.id.toggleButtonCTRL2);
+        
+        togglebutton.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				toggleButtonOnCheckChange(buttonView, isChecked, MessageTypes.KEY_LCTRL);
+			}
+		});
+        
+        togglebutton = (ToggleButton) findViewById(R.id.toggleButtonSHIFT2);
+        
+        togglebutton.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				toggleButtonOnCheckChange(buttonView, isChecked, MessageTypes.KEY_LSHIFT);
+			}
+		});
+        
+        togglebutton = (ToggleButton) findViewById(R.id.toggleButtonMETA2);
+        
+        togglebutton.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				toggleButtonOnCheckChange(buttonView, isChecked, MessageTypes.KEY_META);
+			}
+		});
+                
+        button = (Button) findViewById(R.id.buttonKeyTAB2);
+        
+        button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				buttonTabOnClick(v, MessageTypes.KEY_TAB);
+			}
+		});
+                
+        button = (Button) findViewById(R.id.buttonKeyENTER2);
+        
+        button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				buttonOnClick(v, MessageTypes.KEY_ENTER);
+			}
+		});
+        
+        button = (Button) findViewById(R.id.buttonKeyPrev);
+        
+        button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				buttonOnClick(v, MessageTypes.KEY_PREVIOUSSONG);
+			}
+		});
+        
+        button = (Button) findViewById(R.id.buttonKeyPlayPause);
+        
+        button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				buttonOnClick(v, MessageTypes.KEY_PLAYPAUSE);
+			}
+		});
+        
+        button = (Button) findViewById(R.id.buttonKeyNext);
+        
+        button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				buttonOnClick(v, MessageTypes.KEY_NEXTSONG);
+			}
+		});
+        
+        button = (Button) findViewById(R.id.buttonKeyMute);
+        
+        button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				buttonOnClick(v, MessageTypes.KEY_MUTE);
+			}
+		});
+        
+        button = (Button) findViewById(R.id.buttonKeyVolDown);
+        
+        button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				buttonOnClick(v, MessageTypes.KEY_VOLUMEDOWN);
+			}
+		});
+        
+        button = (Button) findViewById(R.id.buttonKeyVolUp);
+        
+        button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				buttonOnClick(v, MessageTypes.KEY_VOLUMEUP);
+			}
+		});
+        
+        button = (Button) findViewById(R.id.buttonKeyHome2);
+        
+        button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				buttonOnClick(v, MessageTypes.KEY_HOME);
+			}
+		});
+        
+        button = (Button) findViewById(R.id.buttonKeyUp);
+        
+        button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				buttonOnClick(v, MessageTypes.KEY_UP);
+			}
+		});
+        
+        button = (Button) findViewById(R.id.buttonKeyEnd2);
+        
+        button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				buttonOnClick(v, MessageTypes.KEY_END);
+			}
+		});
+        
+        button = (Button) findViewById(R.id.buttonKeyPgUp2);
+        
+        button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				buttonOnClick(v, MessageTypes.KEY_PAGEUP);
+			}
+		});
+        
+        button = (Button) findViewById(R.id.buttonKeyLeft);
+        
+        button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				buttonOnClick(v, MessageTypes.KEY_LEFT);
+			}
+		});
+        
+        button = (Button) findViewById(R.id.buttonKeyDown);
+        
+        button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				buttonOnClick(v, MessageTypes.KEY_DOWN);
+			}
+		});
+        
+        button = (Button) findViewById(R.id.buttonKeyRight);
+        
+        button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				buttonOnClick(v, MessageTypes.KEY_RIGHT);
+			}
+		});
+        
+        button = (Button) findViewById(R.id.buttonKeyPgDn2);
+        
+        button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				buttonOnClick(v, MessageTypes.KEY_PAGEDOWN);
+			}
+		});
 	}
 }
