@@ -137,10 +137,11 @@ Here's how it works on an example of Alt-F4:
 1. 'Turn on' the 'Alt' button (so that it's highlighted)
 2. Press the 'F4' button. Upon pressing it, combination sent to the computer will be Alt-F4.
 
-When you press either 'Send' or the keys below (not counting Mod keys) the applications checks if any modifiers are turned on, and in such case
-will keep them 'pressed' for the entire duration of the input (be it a text message or a single button click). 'Mod' buttons will be automatically
-released immediately after the input, with the exception of the Tab button, after which release is delayed to allow you to easily use the popular
-Alt-Tab shortcut.
+When you press either 'Send' or the keys below (not counting Mod keys) the applications checks if any modifiers are turned on, and in such case will keep them 'pressed' for the entire duration of the input (be it a text message or 
+a single button click). 'Mod' buttons will be automatically released immediately after the input, with the exception of the Tab button, after 
+which release is delayed to allow you to easily use the popular Alt-Tab shortcut.
+
+To view more of the available keys you have to switch to another 'screen' of keys. To do that press 'next keyboard page' button, located in top or top-right part of the screen, depending on the layout.
 
 
 -- BUGS AND PROBLEMS --
@@ -151,12 +152,16 @@ and I'll try to fix it.
 
 AndClient application has been tested on Samsung i5700 with 320x480 resolution and Samsung i9070 with 480x800 resolution, but should work on any resolution.
 
+
 -- LIMITATIONS --
+
 
 As of now, due to lack of place on a single screen, only a limited number of keys are displayed on the AndClient keyboard screen. The server and
 avkbd driver support most of standard PC102 keyboard and some multimedia keys (volume control, play/pause, next/prev song and stop-playing). Full
 support for the remaining keys will hopefully be added in future releases.
 
+-update 22.10.2012-
+added play/pause, next/prev, volume control and directional arrow keys. To switch to another 'screen' of keys press 'next keyboard page' button
+
 Also, multitouch is not yet supported, so you can't 'drag' anything with the mouse, although minimum required Android version is 2.1, so that
 multitouch support may be added in future.
-
