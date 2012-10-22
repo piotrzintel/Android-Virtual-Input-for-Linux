@@ -243,6 +243,23 @@ public class KeyboardActivity extends Activity {
 		if ( isChecked ) {
 			mSwitcherList.add(new Byte(key));
 		} else {
+			final byte[] keyOff = new byte[1];
+			keyOff[0] = (byte)(key + 64);
+
+			mAltQueueHandler.post( new Runnable() {
+				
+				@Override
+				public void run() {
+					try {
+						ConnectionService.mService.sendKeyboardSpecial(keyOff);
+					} catch (NullPointerException e) {
+						Intent intent = new Intent(KeyboardActivity.this, ConnectionService.class);
+						stopService(intent);
+					}
+				}
+				
+			});
+			
 			mSwitcherList.remove(new Byte(key));
 		}
 	}
@@ -587,6 +604,7 @@ public class KeyboardActivity extends Activity {
 		});
         
         button = (Button) findViewById(R.id.buttonKeyUp);
+        button.setText("/\\");
         
         button.setOnClickListener(new OnClickListener() {
 			@Override
@@ -623,6 +641,7 @@ public class KeyboardActivity extends Activity {
 		});
         
         button = (Button) findViewById(R.id.buttonKeyDown);
+        button.setText("\\/");
         
         button.setOnClickListener(new OnClickListener() {
 			@Override
