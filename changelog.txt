@@ -1,6 +1,16 @@
 -- 22.10.2012 --
 
-# Fixed arrow keys symbols display on virtual keyboard buttons
+AndClient:
+
+# Fixed arrow keys symbols display on virtual keyboard buttons.
 
 # Fixed possible issue of switcher keys ([ctrl], [alt], [shift], [win]) being stuck while in pressed state.
   Now every 'switcher' key is released after being turned off on the virtual keyboard.
+
+-- 23.10.2012 --
+
+AndServer:
+
+# Added file containing Valgrind suppression list.
+
+# Code cleanup (common parent class for MouseConnectionHandler and KeyboardConnectionHandler)
