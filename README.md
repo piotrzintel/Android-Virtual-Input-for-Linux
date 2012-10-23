@@ -1,4 +1,6 @@
-Android Virtual Input for Linux
+# Android Virtual Input for Linux
+
+---
 
 The project aims at creating a way to control a Linux-based system with an Android phone over wi-fi.
 It differs from existing projects by simulating input at kernel level so that from system's perspective
@@ -19,19 +21,20 @@ The project is not finished yet and not full keyboard functionality is available
 
 
 
--- INSTALLATION --
+## INSTALLATION
+
 
 Instructions only tested on Gentoo and Ubuntu, appropriate configuration files for other distributions may be different.
 
 
-- AndClient -
+- AndClient
 
 To install you have to copy AndClient.apk (either one from the bin subfolder or compiled yourself) to the phone sd card and install
 it from there. If your phone does not support installing applications from .apk files by default you'll have to use application
 like AppInstaller, available at Google Play. It is also required to enable option: Settings->Application settings->Unknown sources.
 
 
-- AndServer -
+- AndServer
 
 To compile AndServer requires g++ and an OpenSSL library (also the development package, in Ubuntu it is called libssl-dev).
 Server parametres are configured in a file. By default it is '/etc/andserver.cfg'.
@@ -39,9 +42,11 @@ Server parametres are configured in a file. By default it is '/etc/andserver.cfg
 You will also need Java Virtual Machine and Bouncy Castle API (http://www.bouncycastle.org/) to create a 'bks' file. You
 can use version provided (1.45 for java 1.6) or download the latest version from their website and change the name accordingly.
 
-Note:
+### Note:
+
 If you have an OpenSSL lib version 0.9.8n and earlier, you need to copy files from 'Include_oldSSL' to the 'Include' folder,
 overwriting as needed.
+
 
 There is a makefile in the AndServer main directory with following targets:
 
@@ -72,7 +77,7 @@ at boot. These are gentoo-install,gentoo-uninstall and ubuntu-install,ubuntu-uni
 after make install and after you placed paths to the private key file and certificate file in 'andserver.cfg'.
 
 
-- avms/avkbd -
+- avms/avkbd
 
 To compile the drivers require kernel sources (or at least headers) of the running kernel to be present in /usr/src/
 (e.g. gentoo-sources on Gentoo or linux-headers on Ubuntu distributions). On kernel update you'll need to reinstall the drivers.
@@ -85,14 +90,14 @@ In Gentoo you have to manually add 'avms' and 'avkbd' to modules="" list in '/et
 
 
 
--- USAGE --
+## USAGE
 
 
 To use the applications, modules have to be loaded and the server application running before you connect with your phone.
 Also, the phone and the computer should be connected to the same network.
 
 
-- AndServer -
+- AndServer
 
 The server application should be run as root (some options like changing process priority are reserved only for root).
 It can be started with the following options:
@@ -119,7 +124,7 @@ Options passed on startup overwrite those in the configuration file (if any). SS
 application to start. Other options, if not provided, will be completed with the default options.
 
 
-- AndClient -
+- AndClient
 
 Once the server is running and modules loaded you can connect to your computer. Also make certain that the 'andserver.bks' is placed in the main
 folder of your phone's SD card. Before connecting for the first time you need to set the address of your computer, by providing IP and listening
@@ -144,7 +149,7 @@ which release is delayed to allow you to easily use the popular Alt-Tab shortcut
 To view more of the available keys you have to switch to another 'screen' of keys. To do that press 'next keyboard page' button, located in top or top-right part of the screen, depending on the layout.
 
 
--- BUGS AND PROBLEMS --
+## BUGS AND PROBLEMS
 
 
 The project has been tested only on a limited number of machines so if it does not work for you, please send me an e-mail to zintelpiotr@gmail.com
@@ -153,14 +158,14 @@ and I'll try to fix it.
 AndClient application has been tested on Samsung i5700 with 320x480 resolution and Samsung i9070 with 480x800 resolution, but should work on any resolution.
 
 
--- LIMITATIONS --
+## LIMITATIONS
 
 
 As of now, due to lack of place on a single screen, only a limited number of keys are displayed on the AndClient keyboard screen. The server and
 avkbd driver support most of standard PC102 keyboard and some multimedia keys (volume control, play/pause, next/prev song and stop-playing). Full
 support for the remaining keys will hopefully be added in future releases.
 
--update 22.10.2012-
+### update 22.10.2012
 added play/pause, next/prev, volume control and directional arrow keys. To switch to another 'screen' of keys press 'next keyboard page' button
 
 Also, multitouch is not yet supported, so you can't 'drag' anything with the mouse, although minimum required Android version is 2.1, so that
