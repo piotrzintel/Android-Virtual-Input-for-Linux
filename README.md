@@ -44,25 +44,25 @@ can use version provided (1.45 for java 1.6) or download the latest version from
 
 There is a makefile in the AndServer main directory with following targets:
 
-> all - default, compiling the entire application. Output program will be an AndServer file, created inthe main directory.
+> **all** - default, compiling the entire application. Output program will be an AndServer file, created inthe main directory.
 >
-> certificate - create a self-signed server certificate and private key used to encrypt the connection. Both the
+> **certificate** - create a self-signed server certificate and private key used to encrypt the connection. Both the
 >              certificate and the key will be placed in the 'Cert' directory in a single file named 'andserver.pem.
 >              You will be asked several questions. The password you type should be identical every time. Additional
 >              options 'Challenge password' should be left empty.
 >
 >
-> androidbks - puts the server certificate in a .bks file, so that a secure connection can be created with the server. The
+> **androidbks** - puts the server certificate in a .bks file, so that a secure connection can be created with the server. The
 >             file, named 'andserver.bks' will be put in the 'Cert' directory. The file should then be copied to the phone
 >             SD card main directory.
 >
-> clean - removes all object files from the 'Bin' folder.
+> **clean** - removes all object files from the 'Bin' folder.
 >
-> certclean - removes .pem and .bks files from the 'Cert' folder.
+> **certclean** - removes .pem and .bks files from the 'Cert' folder.
 >
-> install - copies 'AndServer' file to the '/usr/bin' directory and 'andserver.conf.example' to '/etc/andserver.conf'
+> **install** - copies 'AndServer' file to the '/usr/bin' directory and 'andserver.conf.example' to '/etc/andserver.conf'
 >
-> distclean - deletes '/usr/bin/AndServer' and '/etc/andserver.conf'.
+> **distclean** - deletes '/usr/bin/AndServer' and '/etc/andserver.conf'.
 >
 > Correct order of installation is: install, certificate, androidbks.
 
@@ -97,20 +97,20 @@ The server application should be run as root (some options like changing process
 It can be started with the following options:
 
 
-  Usage: AndServer [-s] [-d] [-h] [-o CONFIGFILE] [-k KPORT] [-m MPORT] [-l MAXCONNECTIONS]  
+AndServer [-s] [-d] [-h] [-o CONFIGFILE] [-k KPORT] [-m MPORT] [-l MAXCONNECTIONS]  
                    [-C CERTFILE] [-P KEYFILE] [-M MSFILE] [-K KBDFILE]
-
-  -s	do not run as daemon (all messages will be printed to stderr instead of syslog)  
-  -d	turns debug output on  
-  -h	display this text  
-  -o	use [CONFIGFILE] to read configuration from  
-  -k	change keyboard listening port to KPORT (default port is 6780)  
-  -m	change mouse listening port to MPORT (default port is 6781)  
-  -l	set max connection (default value is 2)  
-  -C	set SSL certificate path  
-  -P	set SSL private key path  
-  -M	set mouse driver dev node path (default is "/dev/avms")  
-  -K	set keyboard driver dev node path (default is "/dev/avkbd")
+>
+>  **-s** - do not run as daemon (all messages will be printed to stderr instead of syslog)  
+>  **-d** - turns debug output on  
+>  **-h** - display this text  
+>  **-o** - use [CONFIGFILE] to read configuration from  
+>  **-k** - change keyboard listening port to KPORT (default port is 6780)  
+>  **-m** - change mouse listening port to MPORT (default port is 6781)  
+>  **-l** - set max connection (default value is 2)  
+>  **-C** - set SSL certificate path  
+>  **-P** - set SSL private key path  
+>  **-M** - set mouse driver dev node path (default is "/dev/avms")  
+>  **-K** - set keyboard driver dev node path (default is "/dev/avkbd")
 
   You can close the program by sending SIGINT or SIGKILL (kill PID).
 
