@@ -1,0 +1,42 @@
+{
+  <CRYPTO_malloc>
+  Memcheck:Leak
+  ...
+  fun:CRYPTO_malloc
+}
+
+{
+  <CRYPTO_realloc>
+  Memcheck:Leak
+  ...
+  fun:CRYPTO_realloc
+}
+
+{
+  <Value8/libcrypto.so>
+  Memcheck:Value8
+  ...
+  obj:/usr/lib64/libcrypto.so.1.0.0
+}
+
+{
+  <Cond/libcrypto.so>
+  Memcheck:Cond
+  ...
+  obj:/usr/lib64/libcrypto.so.1.0.0
+}
+
+{
+  <Param/libcrypto.so>
+  Memcheck:Param
+  write(buf)
+  ...
+  obj:/usr/lib64/libcrypto.so.1.0.0
+}
+
+{
+  <Cond/libssl.so.1.0.0>
+  Memcheck:Cond
+  ...
+  obj:/usr/lib64/libssl.so.1.0.0
+}
