@@ -14,3 +14,5 @@ AndServer:
 # Added file containing Valgrind suppression list.
 
 # Code cleanup (common parent class for MouseConnectionHandler and KeyboardConnectionHandler)
+
+# Added #ifdef in "ClientHandler.h" to compile appropriate code to the openssl version

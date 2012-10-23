@@ -60,7 +60,11 @@ class ClientHandler {
 
 		char *sslCertificateFile;
 		char *sslPrivateKeyFile;
+#if (OPENSSL_VERSION_NUMBER >  0x0009080df ) // 0.9.8n
 		const SSL_METHOD *ssl_method;
+#else 
+		SSL_METHOD *ssl_method;
+#endif
 		SSL_CTX *ssl_ctx;
 		SSL *ssl;
 

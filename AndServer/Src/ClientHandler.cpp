@@ -61,6 +61,8 @@ bool ClientHandler::sslInit() {
 	SSL_library_init() ;
 	SSL_load_error_strings();
 
+//	STACK_OF(X509_NAME) *list = NULL;
+
 	if ( (ssl_method = TLSv1_server_method()) == NULL ) {
 		errError("_server_method() error");
 		return false;
@@ -80,12 +82,23 @@ bool ClientHandler::sslInit() {
 		errError("17.12.2011 00:12:33 SSL_CTX_use_PrivateKey_file() error");
 		return false;
 	}
-
+/*
+	// ==== BEGIN CLIENT CERT VERIFICATION
 	if (SSL_CTX_load_verify_locations(ssl_ctx, sslCertificateFile, NULL) != 1) {
 		errError("22.10.2012 23:37:46 SSL_CTX_load_verify_locations() error");
 		return false;
 	}
 
+	if ((list = SSL_load_client_CA_file( sslCertificateFile )) == NULL ) {
+		errError("23.10.2012 16:00:51 SSL_load_client_CA_file() error");
+		return false;
+	}
+
+	SSL_CTX_set_client_CA_list(ssl_ctx, list);
+
+	
+	// ==== END CLIENT CERT VERIFICATION
+*/
 	if ((ssl = SSL_new(ssl_ctx)) == NULL ) {
 		errError("16.12.2011 22:15:15 SSL_new() error");
 		return false;

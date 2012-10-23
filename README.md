@@ -42,12 +42,6 @@ Server parametres are configured in a file. By default it is '/etc/andserver.cfg
 You will also need Java Virtual Machine and Bouncy Castle API (http://www.bouncycastle.org/) to create a 'bks' file. You
 can use version provided (1.45 for java 1.6) or download the latest version from their website and change the name accordingly.
 
-Note:
-
-If you have an OpenSSL lib version 0.9.8n and earlier, you need to copy files from 'Include_oldSSL' to the 'Include' folder,
-overwriting as needed.
-
-
 There is a makefile in the AndServer main directory with following targets:
 
 all - default, compiling the entire application. Output program will be an AndServer file, created inthe main directory.
