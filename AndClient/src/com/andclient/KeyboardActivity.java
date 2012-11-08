@@ -240,9 +240,9 @@ public class KeyboardActivity extends Activity {
 	}
 	
 	private void toggleButtonOnCheckChange(View v, boolean isChecked, byte key) {
-		if ( isChecked ) {
+		if ( isChecked && !(mSwitcherList.contains(new Byte(key))) ) {
 			mSwitcherList.add(new Byte(key));
-		} else {
+		} else if (!isChecked) {
 			final byte[] keyOff = new byte[1];
 			keyOff[0] = (byte)(key + 64);
 
@@ -311,7 +311,6 @@ public class KeyboardActivity extends Activity {
 				buttonTabOnClick(v, MessageTypes.KEY_TAB);
 			}
 		});
-        
         
         button = (Button) findViewById(R.id.buttonKeyENTER);
         
@@ -439,6 +438,7 @@ public class KeyboardActivity extends Activity {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				toggleButtonOnCheckChange(buttonView, isChecked, MessageTypes.KEY_LALT);
+				( (ToggleButton) findViewById(R.id.toggleButtonALT2) ).setChecked(buttonView.isChecked());
 			}
 		});
         
@@ -448,6 +448,7 @@ public class KeyboardActivity extends Activity {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				toggleButtonOnCheckChange(buttonView, isChecked, MessageTypes.KEY_LCTRL);
+				( (ToggleButton) findViewById(R.id.toggleButtonCTRL2) ).setChecked(buttonView.isChecked());
 			}
 		});
         
@@ -457,6 +458,7 @@ public class KeyboardActivity extends Activity {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				toggleButtonOnCheckChange(buttonView, isChecked, MessageTypes.KEY_LSHIFT);
+				( (ToggleButton) findViewById(R.id.toggleButtonSHIFT2) ).setChecked(buttonView.isChecked());
 			}
 		});
         
@@ -466,6 +468,7 @@ public class KeyboardActivity extends Activity {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				toggleButtonOnCheckChange(buttonView, isChecked, MessageTypes.KEY_META);
+				( (ToggleButton) findViewById(R.id.toggleButtonMETA2) ).setChecked(buttonView.isChecked());
 			}
 		});
         
@@ -492,6 +495,7 @@ public class KeyboardActivity extends Activity {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				toggleButtonOnCheckChange(buttonView, isChecked, MessageTypes.KEY_LALT);
+				( (ToggleButton) findViewById(R.id.toggleButtonALT) ).setChecked(buttonView.isChecked());
 			}
 		});
         
@@ -501,6 +505,7 @@ public class KeyboardActivity extends Activity {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				toggleButtonOnCheckChange(buttonView, isChecked, MessageTypes.KEY_LCTRL);
+				( (ToggleButton) findViewById(R.id.toggleButtonCTRL) ).setChecked(buttonView.isChecked());
 			}
 		});
         
@@ -510,6 +515,7 @@ public class KeyboardActivity extends Activity {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				toggleButtonOnCheckChange(buttonView, isChecked, MessageTypes.KEY_LSHIFT);
+				( (ToggleButton) findViewById(R.id.toggleButtonSHIFT) ).setChecked(buttonView.isChecked());
 			}
 		});
         
@@ -519,6 +525,7 @@ public class KeyboardActivity extends Activity {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				toggleButtonOnCheckChange(buttonView, isChecked, MessageTypes.KEY_META);
+				( (ToggleButton) findViewById(R.id.toggleButtonMETA) ).setChecked(buttonView.isChecked());
 			}
 		});
                 
