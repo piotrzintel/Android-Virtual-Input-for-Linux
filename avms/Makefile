@@ -10,6 +10,12 @@ install:
 	cp avms.ko /lib/modules/`uname -r`/
 	depmod -a
 
-ubuntu-install:
+gentoo-install: all
+	cp avms.ko /lib/modules/`uname -r`/
+	depmod -a
+
+ubuntu-install: all
+	cp avms.ko /lib/modules/`uname -r`/
+	depmod -a
 	echo "avms" >> /etc/modules
 
