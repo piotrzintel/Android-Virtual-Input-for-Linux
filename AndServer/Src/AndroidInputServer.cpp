@@ -123,8 +123,13 @@ bool AndroidInputServer::initialize(int argc, char* argv[]) {
 		logger->printMessage("06.12.2011 01:40:39 Daemonized");
 	}
 
-	if ( !readySockets() ) {
-		logger->error("08.12.2011 16:20:59 readySockets() error");
+	if ( !readySocket(&keyboardListeningSocket, &keyboardServerAddress, keyboardListeningPort) ) {
+		logger->error("08.12.2011 16:20:59 readySocket() error");
+		return false;
+	}
+
+	if ( !readySocket(&mouseListeningSocket, &mouseServerAddress, mouseListeningPort) ) {
+		logger->error("12.11.2012 10:00:01 readySocket() error");
 		return false;
 	}
 
@@ -378,103 +383,54 @@ bool AndroidInputServer::daemonize() {
 	return true;
 }
 
-bool AndroidInputServer::readySockets(){
+bool AndroidInputServer::readySocket(int *listeningSocket, struct sockaddr_in *serverAddress, int listeningPort){
 	char tmp[128];
 	int *optval = new int(1);
 	int flags;
 
-	//========= keyboardSocket ==================
-	keyboardListeningSocket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
-	if ( keyboardListeningSocket == -1 ) {
+	*listeningSocket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+	if ( *listeningSocket == -1 ) {
 		sprintf(tmp,"08.12.2011 16:21:36 socket() error: (%d) %s",errno, strerror(errno));
 		logger->error(tmp);
 		delete optval;
 		return false;
 	}
-	memset(&keyboardServerAddress, 0, sizeof(keyboardServerAddress));
-	keyboardServerAddress.sin_family = AF_INET;
-	keyboardServerAddress.sin_addr.s_addr = INADDR_ANY;
-	keyboardServerAddress.sin_port = htons(keyboardListeningPort);
+	memset(serverAddress, 0, sizeof(*serverAddress));
+	serverAddress->sin_family = AF_INET;
+	serverAddress->sin_addr.s_addr = INADDR_ANY;
+	serverAddress->sin_port = htons(listeningPort);
 
-	if ( bind(keyboardListeningSocket, (struct sockaddr *)&keyboardServerAddress,sizeof(keyboardServerAddress)) == -1 ) {
-		sprintf(tmp,"08.12.2011 16:21:55 bind() error. Perhaps the port numbers are too low? Use >=1024 if you are not root: (%d) %s",errno, strerror(errno));
-		logger->error(tmp);
+	if ( bind(*listeningSocket, (struct sockaddr *)serverAddress,sizeof(*serverAddress)) == -1 ) {
+		logger->error("08.12.2011 16:21:55 bind() error. Perhaps the port numbers are too low? Use >=1024 if you are not root",errno);
 		delete optval;
 		return false;
 	}
 
-	if ( listen(keyboardListeningSocket, maxConnections) == -1 ) {
-		sprintf(tmp,"15.12.2011 08:02:43 Listen() error: (%d) %s",errno, strerror(errno));
-		logger->error(tmp);
+	if ( listen(*listeningSocket, maxConnections) == -1 ) {
+		logger->error("15.12.2011 08:02:43 Listen() error",errno);
 		delete optval;
 		return false;
 	}
 
-	if (setsockopt(keyboardListeningSocket,SOL_SOCKET,SO_REUSEADDR,optval, sizeof(int)) == -1) {
-		sprintf(tmp,"15.12.2011 23:06:25 setsockopt() error: (%d) %s",errno, strerror(errno));
-		logger->error(tmp);
+	if (setsockopt(*listeningSocket,SOL_SOCKET,SO_REUSEADDR,optval, sizeof(int)) == -1) {
+		logger->error("15.12.2011 23:06:25 setsockopt() error",errno);
 		delete optval;
 		return false;
 	}
 
-	if ((flags = fcntl(keyboardListeningSocket, F_GETFL, 0)) < 0) 
+	if ((flags = fcntl(*listeningSocket, F_GETFL, 0)) < 0) 
 	{ 
 		logger->error("27.03.2012 20:58:26 fcntl()",errno);
+		delete optval;
 		return false;
 	}
 
-	if (fcntl(keyboardListeningSocket, F_SETFL, flags | O_NONBLOCK) < 0) 
+	if (fcntl(*listeningSocket, F_SETFL, flags | O_NONBLOCK) < 0) 
 	{ 
 		logger->error("27.03.2012 20:58:12 fcntl() ",errno);
-		return false;
-	} 
-
-	//========= mouseSocket ==================
-	mouseListeningSocket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
-	if ( mouseListeningSocket == -1 ) {
-		sprintf(tmp,"15.12.2011 08:02:48 socket() error: (%d) %s",errno, strerror(errno));
-		logger->error(tmp);
 		delete optval;
 		return false;
 	}
-	memset(&mouseServerAddress, 0, sizeof(mouseServerAddress));
-	mouseServerAddress.sin_family = AF_INET;
-	mouseServerAddress.sin_addr.s_addr = INADDR_ANY;
-	mouseServerAddress.sin_port = htons(mouseListeningPort);
-
-	if ( bind(mouseListeningSocket, (struct sockaddr *)&mouseServerAddress,sizeof(mouseServerAddress)) == -1 ) {
-		sprintf(tmp,"15.12.2011 08:02:57 bind() error. Perhaps the port numbers are too low? Use >=1024 if you are not root: (%d) %s",errno, strerror(errno));
-		logger->error(tmp);
-		delete optval;
-		return false;
-	}
-
-	if ( listen(mouseListeningSocket, maxConnections) == -1 ) {
-		sprintf(tmp,"15.12.2011 08:03:04 Listen() error: (%d) %s",errno, strerror(errno));
-		logger->error(tmp);
-		delete optval;
-		return false;
-	}
-
-	if (setsockopt(mouseListeningSocket,SOL_SOCKET,SO_REUSEADDR,optval, sizeof(int)) == -1) {
-		sprintf(tmp,"15.12.2011 23:11:43 setsockopt() error: (%d) %s",errno, strerror(errno));
-		logger->error(tmp);
-		delete optval;
-		return false;
-	}
-
-	if ((flags = fcntl(mouseListeningSocket, F_GETFL, 0)) < 0) 
-	{ 
-		logger->error("27.03.2012 20:56:08 fcntl()",errno);
-		return false;
-	}
-
-	if (fcntl(mouseListeningSocket, F_SETFL, flags | O_NONBLOCK) < 0) 
-	{ 
-		logger->error("27.03.2012 20:57:21 ",errno);
-		return false;
-	}
-
 	delete optval;
 	return true;
 }
@@ -487,17 +443,13 @@ bool AndroidInputServer::semaphoresInit() {
 
 	mouseSem = sem_open(mouseSemName,O_CREAT,S_IWUSR|S_IRUSR,1);
 	if (mouseSem == SEM_FAILED) {
-		char tmp[128];
-		sprintf(tmp,"13.12.2011 21:26:53 sem_open() failed. Errno: (%d) %s",errno, strerror(errno));
-		logger->error(tmp);
+		logger->error("13.12.2011 21:26:53 sem_open() failed",errno);
 		return false;
 	}
 
 	keyboardSem = sem_open(keyboardSemName,O_CREAT,S_IWUSR|S_IRUSR,1);
 	if (mouseSem == SEM_FAILED) {
-		char tmp[128];
-		sprintf(tmp,"13.12.2011 21:30:06 sem_open() failed. Errno: (%d) %s",errno, strerror(errno));
-		logger->error(tmp);
+		logger->error("13.12.2011 21:30:06 sem_open() failed",errno);
 		return false;
 	}
 
@@ -744,40 +696,10 @@ bool AndroidInputServer::parseOptionsFile() {
 				logger->error(tmp);
 			} else { 
 				if (strcmp(optName, "mouse-port") == 0 ) {
-					int arg = 0;
-					if ( !isNumber(optArg) || (sscanf(optArg,"%d", &arg) != 1) ) {
-						char tmp[128];
-						sprintf(tmp,"Error in config file, line %d: mouse-port: incorrect option argument",lineNo);
-						logger->error(tmp);
-					} else {
-						if (mouseListeningPort == 0 ) {
-							if ( arg == keyboardListeningPort ) {
-								char tmp[128];
-								sprintf(tmp,"Error in config file, line %d: mouse-port cannot be the same as keyboard port",lineNo);
-								logger->error(tmp);
-							} else  {
-								mouseListeningPort = arg;
-							}
-						}
-					}
+					parseOptionsFilePortOpt("mouse-port", &mouseListeningPort, optArg, lineNo);
 
 				} else if (strcmp(optName, "keyboard-port") == 0) {
-					int arg = 0;
-					if ( !isNumber(optArg) || (sscanf(optArg,"%d", &arg) != 1) ) {
-						char tmp[128];
-						sprintf(tmp,"Error in config file, line %d: keyboard-port: incorrect option argument",lineNo);
-						logger->error(tmp);
-					} else {
-						if (keyboardListeningPort == 0) {
-							if ( arg == mouseListeningPort ) {
-								char tmp[128];
-								sprintf(tmp,"Error in config file, line %d: keyboard-port cannot be the same as mouse port",lineNo);
-								logger->error(tmp);
-							} else  {
-								keyboardListeningPort = arg;
-							}
-						}
-					}
+					parseOptionsFilePortOpt("keyboard-port", &keyboardListeningPort, optArg, lineNo);
 
 				} else if (strcmp(optName, "max-connections") == 0) {
 					int arg = 0;
@@ -790,131 +712,19 @@ bool AndroidInputServer::parseOptionsFile() {
 					}
 
 				} else if (strcmp(optName, "private-key-file") == 0) {
-					char *arg = new char[strlen(optArg) + 1];
-					if ( sscanf(optArg,"%s", arg) != 1 ) {
-						char tmp[128];
-						sprintf(tmp,"Error in config file, line %d: private-key-file: incorrect option argument",lineNo);
-						logger->error(tmp);
-					} else {
-						if (!sslPrivateKeyFile) {
-							struct stat st;
-							int r = stat(optArg, &st);
-							if ( r != 0 ) {
-								char tmp[128];
-								sprintf(tmp,"Error in config file, line %d: \"%s\" - private key file not found",lineNo, optArg);
-								logger->error(tmp);
-							} else if ( (r == 0) && ( !S_ISREG(st.st_mode) ) ) {
-								char tmp[128];
-								sprintf(tmp,"Error in config file, line %d: \"%s\" is not a regular file",lineNo, optArg);
-								logger->error(tmp);							
-							} else {
-								sslPrivateKeyFile = strcpy(new char[strlen(arg) + 1], arg);
-							}
-						}
-					}
-					delete[] arg;
+					parseOptionsFileCertOpt("private-key-file", &sslPrivateKeyFile, optArg, lineNo);
 
 				} else if (strcmp(optName, "certificate-file") == 0) {
-					char *arg = new char[strlen(optArg) + 1];
-					if ( sscanf(optArg,"%s", arg) != 1 ) {
-						char tmp[128];
-						sprintf(tmp,"Error in config file, line %d: certificate-file: incorrect option argument",lineNo);
-						logger->error(tmp);
-					} else {
-						if (!sslCertificateFile) {
-							struct stat st;
-							int r = stat(optArg, &st);
-							if ( r != 0 ) {
-								char tmp[128];
-								sprintf(tmp,"Error in config file, line %d: \"%s\" - certificate file not found",lineNo, optArg);
-								logger->error(tmp);
-							} else if ( ( r == 0 ) && ( !S_ISREG(st.st_mode) ) ) {
-								char tmp[128];
-								sprintf(tmp,"Error in config file, line %d: \"%s\" is not a regular file",lineNo, optArg);
-								logger->error(tmp);							
-							} else {
-								sslCertificateFile = strcpy(new char[strlen(arg) + 1], arg);
-							}
-						}
-					}
-					delete[] arg;
+					parseOptionsFileCertOpt("certificate-file", &sslCertificateFile, optArg, lineNo);
 
 				} else if (strcmp(optName, "client-certificate-file") == 0) {
-					char *arg = new char[strlen(optArg) + 1];
-					if ( sscanf(optArg,"%s", arg) != 1 ) {
-						char tmp[128];
-						sprintf(tmp,"Error in config file, line %d: client-certificate-file: incorrect option argument",lineNo);
-						logger->error(tmp);
-					} else {
-						if (!sslClientCertificateFile) {
-							struct stat st;
-							int r = stat(optArg, &st);
-							if ( r != 0 ) {
-								char tmp[128];
-								sprintf(tmp,"Error in config file, line %d: \"%s\" - client certificate file not found",lineNo, optArg);
-								logger->error(tmp);
-							} else if ( ( r == 0 ) && ( !S_ISREG(st.st_mode) ) ) {
-								char tmp[128];
-								sprintf(tmp,"Error in config file, line %d: \"%s\" is not a regular file",lineNo, optArg);
-								logger->error(tmp);							
-							} else {
-								sslClientCertificateFile = strcpy(new char[strlen(arg) + 1], arg);
-							}
-						}
-					}
-					delete[] arg;
+					parseOptionsFileCertOpt("client-certificate-file", &sslClientCertificateFile, optArg, lineNo);
 
 				} else if (strcmp(optName, "mouse-device-file") == 0) {
-					char *arg = new char[strlen(optArg) + 1];
-					if ( sscanf(optArg,"%s", arg) != 1 ) {
-						char tmp[128];
-						sprintf(tmp,"Error in config file, line %d: mouse-device-file: incorrect option argument",lineNo);
-						logger->error(tmp);
-					} else {
-						if (!mouseFilePath) {
-							struct stat st;
-							int r = stat(optArg, &st);
-							if ( r != 0 ) {
-								char tmp[128];
-								sprintf(tmp,"Warning (config file, line %d): \"%s\" - file not found, will be created upon a successful connection",lineNo,optArg);
-								logger->error(tmp);
-								mouseFilePath = strcpy(new char[strlen(arg) + 1], arg);
-							} else if ( ( r == 0 ) && ( !S_ISCHR(st.st_mode) ) ) {
-								char tmp[128];
-								sprintf(tmp,"Error in config file, line %d: \"%s\" is not a character special file",lineNo, optArg);
-								logger->error(tmp);
-							} else {
-								mouseFilePath = strcpy(new char[strlen(arg) + 1], arg);
-							}
-						} 
-					}
-					delete[] arg;
+					parseOptionsFileDevOpt("mouse-device-file", &mouseFilePath, optArg, lineNo);
 
 				} else if (strcmp(optName, "keyboard-device-file") == 0) {
-					char *arg = new char[strlen(optArg) + 1];
-					if ( sscanf(optArg,"%s", arg) != 1 ) {
-						char tmp[128];
-						sprintf(tmp,"keyboard-device-file: incorrect option argument in config file, line %d",lineNo);
-						logger->error(tmp);
-					} else {
-						if (!keyboardFilePath) {
-							struct stat st;
-							int r = stat(optArg, &st);
-							if ( r != 0 ) {
-								char tmp[128];
-								sprintf(tmp,"Warning (config file, line %d): \"%s\" - file not found, will be created upon a successful connection",lineNo,optArg);
-								logger->error(tmp);
-								keyboardFilePath = strcpy(new char[strlen(arg) + 1], arg);
-							} else if ( ( r == 0 ) && ( !S_ISCHR(st.st_mode) ) ) {
-								char tmp[128];
-								sprintf(tmp,"Error in config file, line %d: \"%s\" is not a character special file",lineNo, optArg);
-								logger->error(tmp);							
-							} else {
-								keyboardFilePath = strcpy(new char[strlen(arg) + 1], arg);
-							}
-						}
-					}
-					delete[] arg;
+					parseOptionsFileDevOpt("keyboard-device-file", &keyboardFilePath, optArg, lineNo);
 
 				} else {
 					char tmp[128];
@@ -938,6 +748,78 @@ bool AndroidInputServer::parseOptionsFile() {
 	delete[] optsLineBuffer;
 	
 	return !error;
+}
+
+void AndroidInputServer::parseOptionsFilePortOpt(const char *optName, int *optVariable, char *optArg, int lineNo) {
+	int arg = 0;
+	if ( !isNumber(optArg) || (sscanf(optArg,"%d", &arg) != 1) ) {
+		char tmp[128];
+		sprintf(tmp,"Error in config file, line %d: %s: incorrect option argument", lineNo, optName);
+		logger->error(tmp);
+	} else {
+		if (*optVariable == 0 ) {
+			if ( arg == *optVariable ) {
+				char tmp[128];
+				sprintf(tmp,"Error in config file, line %d: mouse-port and keyboard port cannot be the same",lineNo);
+				logger->error(tmp);
+			} else  {
+				*optVariable = arg;
+			}
+		}
+	}
+}
+
+void AndroidInputServer::parseOptionsFileCertOpt(const char *optName, char **optVariable, char *optArg, int lineNo) {
+	char *arg = new char[strlen(optArg) + 1];
+	if ( sscanf(optArg,"%s", arg) != 1 ) {
+		char tmp[128];
+		sprintf(tmp,"Error in config file, line %d: private-key-file: incorrect option argument",lineNo);
+		logger->error(tmp);
+	} else {
+		if (!*optVariable) {
+			struct stat st;
+			int r = stat(optArg, &st);
+			if ( r != 0 ) {
+				char tmp[128];
+				sprintf(tmp,"Error in config file, line %d: \"%s\" - private key file not found",lineNo, optArg);
+				logger->error(tmp);
+			} else if ( (r == 0) && ( !S_ISREG(st.st_mode) ) ) {
+				char tmp[128];
+				sprintf(tmp,"Error in config file, line %d: \"%s\" is not a regular file",lineNo, optArg);
+				logger->error(tmp);							
+			} else {
+				*optVariable = strcpy(new char[strlen(arg) + 1], arg);
+			}
+		}
+	}
+	delete[] arg;
+}
+
+void AndroidInputServer::parseOptionsFileDevOpt(const char *optName, char **optVariable, char *optArg, int lineNo) {
+	char *arg = new char[strlen(optArg) + 1];
+	if ( sscanf(optArg,"%s", arg) != 1 ) {
+		char tmp[128];
+		sprintf(tmp,"%s: incorrect option argument in config file, line %d",optName, lineNo);
+		logger->error(tmp);
+	} else {
+		if (!*optVariable) {
+			struct stat st;
+			int r = stat(optArg, &st);
+			if ( r != 0 ) {
+				char tmp[128];
+				sprintf(tmp,"Warning (config file, line %d): \"%s\" - file not found, will be created upon a successful connection",lineNo,optArg);
+				logger->error(tmp);
+				*optVariable = strcpy(new char[strlen(arg) + 1], arg);
+			} else if ( ( r == 0 ) && ( !S_ISCHR(st.st_mode) ) ) {
+				char tmp[128];
+				sprintf(tmp,"Error in config file, line %d: \"%s\" is not a character special file",lineNo, optArg);
+				logger->error(tmp);							
+			} else {
+				*optVariable = strcpy(new char[strlen(arg) + 1], arg);
+			}
+		}
+	}
+	delete[] arg;
 }
 
 bool AndroidInputServer::isNumber(const char * string)

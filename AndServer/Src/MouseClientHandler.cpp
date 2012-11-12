@@ -45,26 +45,20 @@ bool MouseClientHandler::handleClient() {
 
 	int *optval = new int(1);
 	if (setsockopt(connectionSocket,SOL_SOCKET,SO_KEEPALIVE,optval, sizeof(int)) == -1) {
-		char tmp[128];
-		sprintf(tmp,"02.03.2012 17:14:53 setsockopt() error: (%d) %s",errno, strerror(errno));
-		logger->error(tmp);
+		logger->error("02.03.2012 17:14:53 setsockopt() error",errno);
 		delete optval;
 		return false;
 	}
 
 	if (setsockopt(connectionSocket,SOL_TCP,TCP_KEEPCNT,optval, sizeof(int)) == -1) {
-		char tmp[128];
-		sprintf(tmp,"02.03.2012 17:24:57 setsockopt() error: (%d) %s",errno, strerror(errno));
-		logger->error(tmp);
+		logger->error("02.03.2012 17:24:57 setsockopt() error",errno);
 		delete optval;
 		return false;
 	}
 
 	*optval = 60;
 	if (setsockopt(connectionSocket,SOL_TCP,TCP_KEEPIDLE,optval, sizeof(int)) == -1) {
-		char tmp[128];
-		sprintf(tmp,"02.03.2012 17:24:57 setsockopt() error: (%d) %s",errno, strerror(errno));
-		logger->error(tmp);
+		logger->error("02.03.2012 17:24:57 setsockopt() error",errno);
 		delete optval;
 		return false;
 	}
@@ -115,9 +109,7 @@ bool MouseClientHandler::handleClient() {
 			break;
 		} else if (ret == -1) {
 			if (errno != EINTR) {
-				char tmp[128];
-				sprintf(tmp,"21.12.2011 14:12:05 poll() error: (%d) %s",errno,strerror(errno));
-				logger->error(tmp);
+				logger->error("21.12.2011 14:12:05 poll() error",errno);
 			}
 			break;
 		}

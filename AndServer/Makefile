@@ -41,7 +41,7 @@ clientcert:
 	cat Cert/client.crt >> Cert/client.pem
 	openssl pkcs12 -in Cert/client.pem -export -out Cert/client.pkcs12 -passout pass:123456
 
-	rm -rf Cert/client.key Cert/client.pem Cert/client.key.insecure Cert/client.csr
+	rm -rf Cert/client.key Cert/client.pem Cert/client.key.insecure
 
 androidbks:
 	chmod +x mkStore.sh

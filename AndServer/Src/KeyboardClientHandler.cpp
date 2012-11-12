@@ -45,26 +45,20 @@ bool KeyboardClientHandler::handleClient() {
 
 	int *optval = new int(1);
 	if (setsockopt(connectionSocket,SOL_SOCKET,SO_KEEPALIVE,optval, sizeof(int)) == -1) {
-		char tmp[128];
-		sprintf(tmp,"04.03.2012 03:28:41 setsockopt() error: (%d) %s",errno, strerror(errno));
-		logger->error(tmp);
+		logger->error("04.03.2012 03:28:41 setsockopt() error",errno);
 		delete optval;
 		return false;
 	}
 
 	if (setsockopt(connectionSocket,SOL_TCP,TCP_KEEPCNT,optval, sizeof(int)) == -1) {
-		char tmp[128];
-		sprintf(tmp,"04.03.2012 03:28:49 setsockopt() error: (%d) %s",errno, strerror(errno));
-		logger->error(tmp);
+		logger->error("04.03.2012 03:28:49 setsockopt() error",errno);
 		delete optval;
 		return false;
 	}
 
 	*optval = 60;
 	if (setsockopt(connectionSocket,SOL_TCP,TCP_KEEPIDLE,optval, sizeof(int)) == -1) {
-		char tmp[128];
-		sprintf(tmp,"04.03.2012 03:28:56 setsockopt() error: (%d) %s",errno, strerror(errno));
-		logger->error(tmp);
+		logger->error("04.03.2012 03:28:56 setsockopt() error",errno);
 		delete optval;
 		return false;
 	}

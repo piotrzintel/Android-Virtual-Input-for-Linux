@@ -73,11 +73,14 @@ class AndroidInputServer {
 		bool parseOptionsFile();
 		bool getDefaultPaths();
 		bool daemonize();
-		bool readySockets();
+		bool readySocket(int *listeningSocket, struct sockaddr_in *serverAddress, int listeningPort);
 		bool semaphoresInit();
 		void handleClient(const int acceptedFromListeningSocket);
 		int handleConnectionRequest(const int acceptedFromListeningSocket);
 		int splitServer();
+		void parseOptionsFilePortOpt(const char *optName, int *optVariable, char *optArg, int lineNo);
+		void parseOptionsFileCertOpt(const char *optName, char **optVariable, char *optArg, int lineNo);
+		void parseOptionsFileDevOpt(const char *optName, char **optVariable, char *optArg, int lineNo);
 
 		static bool receivedEndSignal;
 		static bool receivedSigChild;
