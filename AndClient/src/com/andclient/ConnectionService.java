@@ -54,14 +54,8 @@ public class ConnectionService extends Service {
 	private static Looper mMouseServiceLooper;
 	private static Looper mKeyboardServiceLooper;
 	
-	private static ServiceHandler mMouseServiceHandler;
-	private static ServiceHandler mKeyboardServiceHandler;
-	
-	private final class ServiceHandler extends Handler {
-		public ServiceHandler(Looper looper) {
-			super(looper);
-		}
-	}
+	private static Handler mMouseServiceHandler;
+	private static Handler mKeyboardServiceHandler;
 
 	private static boolean mIsMouseConnected = false;
 	private static boolean mIsKeyboardConnected = false;
@@ -89,14 +83,14 @@ public class ConnectionService extends Service {
 				HandlerThread thread = new HandlerThread("MouseConnectionServiceHandlerThread", Process.THREAD_PRIORITY_BACKGROUND);
 				thread.start();
 				mMouseServiceLooper = thread.getLooper();
-				mMouseServiceHandler = new ServiceHandler(mMouseServiceLooper);
+				mMouseServiceHandler = new Handler(mMouseServiceLooper);
 				// END MOUSE THREAD
 				
 				// KEYBOARD THREAD
 				thread = new HandlerThread("KeyboardConnectionServiceHandlerThread", Process.THREAD_PRIORITY_BACKGROUND);
 				thread.start();
 				mKeyboardServiceLooper = thread.getLooper();
-				mKeyboardServiceHandler = new ServiceHandler(mKeyboardServiceLooper);
+				mKeyboardServiceHandler = new Handler(mKeyboardServiceLooper);
 				// END KEYBOARD THREAD
 						
 		
@@ -176,7 +170,7 @@ public class ConnectionService extends Service {
 	@Override
 	public void onDestroy()	{
 		if (mMouseConnectionHandler != null) {
-			mMouseConnectionHandler.close();	
+			mMouseConnectionHandler.close();
 		}
 		if (mKeyboardConnectionHandler != null) {
 			mKeyboardConnectionHandler.close();	
@@ -301,7 +295,26 @@ public class ConnectionService extends Service {
 	}
 	
 	private void pollConnection() {
-		while (mService != null) {
+		
+		final class HasFinished {
+			private boolean finished;
+			
+			public HasFinished() {
+				finished = false;
+			}
+			
+			public boolean endLoop() {
+				return finished;
+			}
+			
+			public void finish() {
+				finished = true;
+			}
+		}
+		
+		final HasFinished hasFinished = new HasFinished();
+		
+		while (mService != null && !hasFinished.endLoop()) {
 			mMouseServiceHandler.post(new Runnable() {
 				@Override
 				public void run() {
@@ -309,6 +322,10 @@ public class ConnectionService extends Service {
 						mMouseConnectionHandler.pollConnectionStatus();
 					} catch (Exception e) {
 						sendConnectionBroadcast(ConnectionService.CONNECTION_LOST_INTENT);
+						Log.e("ConnectionService", "1 " + e.toString());
+						synchronized(hasFinished) {
+							hasFinished.finish();
+						}
 						stopSelf();
 					}
 				}
@@ -321,13 +338,17 @@ public class ConnectionService extends Service {
 						mKeyboardConnectionHandler.pollConnectionStatus();
 					} catch (Exception e) {
 						sendConnectionBroadcast(ConnectionService.CONNECTION_LOST_INTENT);
+						Log.e("ConnectionService", "2 " + e.toString());
+						synchronized(hasFinished) {
+							hasFinished.finish();
+						}
 						stopSelf();
 					}
 				}
 			});
 			
 			try {
-				Thread.sleep(5000);
+				Thread.sleep(2000);
 			} catch (InterruptedException e) {
 				Log.e("ConnectionService", "2012-03-02 15:45:58 " + e.toString());
 			}
