@@ -43,6 +43,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 
 import javax.net.SocketFactory;
+import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLSocket;
@@ -73,12 +74,16 @@ public class ConnectionHandler {
 		
 		try {
 			KeyStore trustStore = KeyStore.getInstance("BKS");
+			KeyStore keyStore = KeyStore.getInstance("BKS");
+			
 			FileInputStream trustIfstream = new FileInputStream(Environment.getExternalStorageDirectory().getPath() + "/andserver.bks");
-						
+			FileInputStream keyIfstream = new FileInputStream(Environment.getExternalStorageDirectory().getPath() + "/andserver.bks");
+
 			SSLContext sslContext = SSLContext.getInstance("TLSV1");
 			
 			try {
 				trustStore.load(trustIfstream, "123456".toCharArray());
+				keyStore.load(keyIfstream, "123456".toCharArray());
 			} catch (NoSuchAlgorithmException e) {
 				Log.e("ConnectionHandler", "2012-03-02 23:00:53 " + e.toString());
 			} catch (CertificateException e) {
@@ -88,13 +93,18 @@ public class ConnectionHandler {
 			}
 			finally {
 					trustIfstream.close();
+					keyIfstream.close();
 			}
+			trustStore.deleteEntry("1");
+			keyStore.deleteEntry("0");
 			
 			TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance("X509");
-						
-			trustManagerFactory.init(trustStore);
+			KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("X509");
 			
-			sslContext.init(null, trustManagerFactory.getTrustManagers(), null);
+			trustManagerFactory.init(trustStore);
+			keyManagerFactory.init(keyStore, "bbbb".toCharArray());
+						
+			sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(), null);
 			msslSocketFactory = sslContext.getSocketFactory();
 			
 		} catch (IOException e) {
@@ -125,6 +135,7 @@ public class ConnectionHandler {
 			msslSocket.setUseClientMode(true);
 
 			msslSocket.startHandshake();
+
 			if (!msslSocket.isConnected()) {
 				throw new Exception("Could not connect to the server");	
 			}

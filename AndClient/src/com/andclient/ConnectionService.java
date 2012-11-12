@@ -113,6 +113,7 @@ public class ConnectionService extends Service {
 					try {
 						mMouseConnectionHandler = new MouseConnectionHandler(serverIp, mousePort);
 					} catch (Exception e) {
+						Log.e("ConnectionService", "2012-11-11 21:18:11 " + e.toString());
 						sendConnectionBroadcast(ConnectionService.CONNECTION_FAILED_INTENT, e.getMessage());
 						stopSelf();
 					}
@@ -126,6 +127,7 @@ public class ConnectionService extends Service {
 										hasConnectedSendBroadcast();
 									}
 								} catch (Exception e) {
+									Log.e("ConnectionService", "2012-11-11 21:15:49 " + e.toString());
 									sendConnectionBroadcast(ConnectionService.CONNECTION_FAILED_INTENT, e.getMessage());
 									stopSelf();
 								}
@@ -136,6 +138,7 @@ public class ConnectionService extends Service {
 					try {
 						mKeyboardConnectionHandler = new KeyboardConnectionHandler(serverIp, keyboardPort);
 					} catch (Exception e) {
+							Log.e("ConnectionService", "2012-11-11 21:16:36 " + e.toString());
 							sendConnectionBroadcast(ConnectionService.CONNECTION_FAILED_INTENT, e.getMessage());
 							stopSelf();
 					}
@@ -154,6 +157,7 @@ public class ConnectionService extends Service {
 										}
 									}).start();
 								} catch (Exception e) {
+									Log.e("ConnectionService", "2012-11-11 21:17:06 " + e.toString());
 									sendConnectionBroadcast(ConnectionService.CONNECTION_FAILED_INTENT, e.getMessage());
 									stopSelf();
 								}
