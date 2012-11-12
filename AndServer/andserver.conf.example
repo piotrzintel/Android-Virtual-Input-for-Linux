@@ -5,16 +5,19 @@
 #max-connections 2 
 
 # define mouse listening port
-#mouse-port 6781 
+#mouse-port 6781
 
 # define keyboard listening port
-#keyboard-port 6780 
+#keyboard-port 6780
 
 # path to file containing server private key
 #private-key-file /path_to_file/server.pem 
 
 # path to file containing server certificate
 #certificate-file /path_to_file/server.pem 
+
+# path to file containing server certificate
+#certificate-file /path_to_file/client.pem 
 
 # mouse character special file
 #mouse-device-file /dev/avms 

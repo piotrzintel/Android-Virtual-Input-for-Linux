@@ -28,8 +28,9 @@
 
 #include "MouseClientHandler.h"
 
-MouseClientHandler::MouseClientHandler(const int connectionSocketArg, class Logger *loggerArg, char* mouseSemName, char* sslCertificateFileArg, char* sslPrivateKeyFileArg, char* mouseFilePathArg) 
-	: ClientHandler( connectionSocketArg, loggerArg, mouseSemName, sslCertificateFileArg, sslPrivateKeyFileArg, mouseFilePathArg ) {
+MouseClientHandler::MouseClientHandler(const int connectionSocketArg, class Logger *loggerArg, char* mouseSemName, char* sslCertificateFileArg, 
+						char* sslPrivateKeyFileArg, char* sslClientCertificateFileArg, char* mouseFilePathArg, bool verifyPeerCertificateArg)
+	: ClientHandler( connectionSocketArg, loggerArg, mouseSemName, sslCertificateFileArg, sslPrivateKeyFileArg, sslClientCertificateFileArg, mouseFilePathArg, verifyPeerCertificateArg ) {
 	mouseHandler = NULL;
 }
 

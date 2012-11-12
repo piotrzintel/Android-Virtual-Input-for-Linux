@@ -28,8 +28,9 @@
 
 #include "KeyboardClientHandler.h"
 
-KeyboardClientHandler::KeyboardClientHandler(const int connectionSocketArg, class Logger *loggerArg, char* keyboardSemName, char* sslCertificateFileArg, char* sslPrivateKeyFileArg, char* keyboardFilePathArg)
-	: ClientHandler( connectionSocketArg, loggerArg, keyboardSemName, sslCertificateFileArg, sslPrivateKeyFileArg, keyboardFilePathArg ) {
+KeyboardClientHandler::KeyboardClientHandler(const int connectionSocketArg, class Logger *loggerArg, char* keyboardSemName, char* sslCertificateFileArg, 
+							char* sslPrivateKeyFileArg, char* sslClientCertificateFileArg, char* keyboardFilePathArg, bool verifyPeerCertificateArg)
+	: ClientHandler( connectionSocketArg, loggerArg, keyboardSemName, sslCertificateFileArg, sslPrivateKeyFileArg, sslClientCertificateFileArg, keyboardFilePathArg, verifyPeerCertificateArg ) {
 	keyboardHandler = NULL;
 }
 

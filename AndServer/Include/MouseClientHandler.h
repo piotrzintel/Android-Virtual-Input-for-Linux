@@ -35,8 +35,8 @@
 
 class MouseClientHandler : ClientHandler {
 	public:
-		MouseClientHandler(const int connectionSocketArg, class Logger *loggerArg, char* mouseSemName,
-					char* sslCertificateFileArg, char* sslPrivateKeyFileArg, char* mouseFilePath);
+		MouseClientHandler(const int connectionSocketArg, class Logger *loggerArg, char* mouseSemName, char* sslCertificateFileArg, 
+					char* sslPrivateKeyFileArg, char* sslClientCertificateFileArg, char* mouseFilePath, bool verifyPeerCertificateArg);
 		~MouseClientHandler();
 		bool handleClient();
 

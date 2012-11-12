@@ -42,8 +42,8 @@
 
 class ClientHandler {
 	public:
-		ClientHandler(const int connectionSocketArg, class Logger *loggerArg, char* semName,
-					char* sslCertificateFileArg, char* sslPrivateKeyFileArg, char* filePathArg);
+		ClientHandler(const int connectionSocketArg, class Logger *loggerArg, char* semName, char* sslCertificateFileArg, 
+					char* sslPrivateKeyFileArg, char* sslClientCertificateFileArg, char* filePathArg, bool verifyPeerCertificateArg);
 		~ClientHandler();
 		virtual bool handleClient() = 0;
 
@@ -60,6 +60,7 @@ class ClientHandler {
 
 		char *sslCertificateFile;
 		char *sslPrivateKeyFile;
+		char *sslClientCertificateFile;
 #if (OPENSSL_VERSION_NUMBER >  0x0009080df ) // 0.9.8n
 		const SSL_METHOD *ssl_method;
 #else 
@@ -67,6 +68,7 @@ class ClientHandler {
 #endif
 		SSL_CTX *ssl_ctx;
 		SSL *ssl;
+		bool verifyPeerCertificate;
 
 		sem_t *semaphore;
 

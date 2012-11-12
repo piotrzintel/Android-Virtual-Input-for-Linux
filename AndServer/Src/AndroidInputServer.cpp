@@ -39,10 +39,12 @@ AndroidInputServer::AndroidInputServer() {
 	isDaemon = true;
 	debug = false;
 	child = false;
+	verifyPeerCertificate = true;
 	logger = new Logger();
 	optionsFilePath = strcpy(new char[strlen(OPTIONS_DEFAULT_FILE_PATH) + 1], OPTIONS_DEFAULT_FILE_PATH);
 	sslCertificateFile = NULL;
 	sslPrivateKeyFile = NULL;
+	sslClientCertificateFile = NULL;
 	keyboardFilePath = NULL;
 	mouseFilePath = NULL;
 	mouseSem = NULL;
@@ -73,6 +75,7 @@ AndroidInputServer::~AndroidInputServer(){
 	}
 	if (sslCertificateFile ) delete[] sslCertificateFile;
 	if (sslPrivateKeyFile ) delete[] sslPrivateKeyFile;
+	if (sslClientCertificateFile ) delete[] sslClientCertificateFile;
 	if ( (logger) ) delete logger;
 	if (keyboardClientHandler) delete keyboardClientHandler;
 	if (mouseClientHandler) delete mouseClientHandler;
@@ -161,6 +164,7 @@ bool AndroidInputServer::andListen() {
 			return true;
 		}
 
+		// wait for end of at least one connection (or program termination)
 		if ( activeConnections >= maxConnections ) {
 			sigset_t mask, oldmask;
 			sigemptyset(&mask);
@@ -251,12 +255,12 @@ int AndroidInputServer::handleConnectionRequest(const int acceptedFromListeningS
 
 void AndroidInputServer::handleClient(const int acceptedFromListeningSocket){
 	if (acceptedFromListeningSocket == keyboardListeningSocket) {
-		keyboardClientHandler = new KeyboardClientHandler(clientSocket, logger, keyboardSemName, sslCertificateFile, sslPrivateKeyFile, keyboardFilePath);
+		keyboardClientHandler = new KeyboardClientHandler(clientSocket, logger, keyboardSemName, sslCertificateFile, sslPrivateKeyFile, sslClientCertificateFile, keyboardFilePath, verifyPeerCertificate);
 		keyboardClientHandler->handleClient();
 		delete keyboardClientHandler;
 		keyboardClientHandler = NULL;
 	} else {
-		mouseClientHandler = new MouseClientHandler(clientSocket, logger, mouseSemName, sslCertificateFile, sslPrivateKeyFile, mouseFilePath);
+		mouseClientHandler = new MouseClientHandler(clientSocket, logger, mouseSemName, sslCertificateFile, sslPrivateKeyFile, sslClientCertificateFile, mouseFilePath, verifyPeerCertificate);
 		mouseClientHandler->handleClient();
 		delete mouseClientHandler;
 		mouseClientHandler = NULL;
@@ -292,10 +296,11 @@ int AndroidInputServer::splitServer() {
 }
 
 void AndroidInputServer::usage(const char* programName) {
-	cerr << "\nUsage: " << programName << " [-s] [-d] [-h] [-o CONFIGFILE] [-k KPORT] [-m MPORT] [-l MAXCONNECTIONS] [-C CERTFILE] [-P KEYFILE] [-M MSFILE] [-K KBDFILE]\n\n";
+	cerr << "\nUsage: " << programName << " [-s] [-d] [-h] -[u] [-o CONFIGFILE] [-k KPORT] [-m MPORT] [-l MAXCONNECTIONS] [-C CERTFILE] [-P KEYFILE] [-V CLIENTCERTFILE] [-M MSFILE] [-K KBDFILE]\n\n";
 	cerr << "-s\tdo not run as daemon (all messages will be printed to stderr instead of syslog)\n";
 	cerr << "-d\tturns debug output on\n";
 	cerr << "-h\tdisplay this text\n";
+	cerr << "-u\tdo NOT verify client certificate (not recommended)\n";
 	cerr << "-o\tuse [CONFIGFILE] to read configuration from\n";
 	cerr << "-k\tchange keyboard listening port to KPORT";
 	cerr << " (default port is " << KEYBOARD_DEFAULT_PORT << ")\n";
@@ -305,6 +310,7 @@ void AndroidInputServer::usage(const char* programName) {
 	cerr << " (default value is 2)\n";
 	cerr << "-C\tset SSL certificate path\n";
 	cerr << "-P\tset SSL private key path\n";
+	cerr << "-V\tset client SSL certificate path\n";
 	cerr << "-M\tset mouse driver dev node path (default is \"/dev/avms\")\n";
 	cerr << "-K\tset keyboard driver dev node path (default is \"/dev/avkbd\")\n";
 	cerr << "\nYou can close the program by sending SIGINT or SIGKILL (kill PID).\n";
@@ -506,7 +512,7 @@ bool AndroidInputServer::parseOptions(int argc, char* argv[]){
 	programName = new char[strlen(basename(argv[0])) + 1];
 	programName = strncpy(programName,basename(argv[0]),strlen(basename(argv[0])));
 
-	while((c = getopt(argc, argv, "sdho:k:m:l:C:P:M:K:")) != -1)
+	while((c = getopt(argc, argv, "sdhuo:k:m:l:C:P:V:M:K:")) != -1)
 	{
 		switch (c)
 		{
@@ -521,6 +527,10 @@ bool AndroidInputServer::parseOptions(int argc, char* argv[]){
 
 			case 'h':
 				usage(programName);
+			
+			case 'u':
+				verifyPeerCertificate = false;
+			break;
 
 			case 'o':
 				ret = stat(optarg, &st);
@@ -599,6 +609,19 @@ bool AndroidInputServer::parseOptions(int argc, char* argv[]){
 				}
 			break;
 
+			case 'V':
+				ret = stat(optarg, &st);
+				if ( ret != -0 ) {
+					cerr << "\n-V: \"" << optarg << "\" incorrect argument, file not found\n";
+					usage(programName);
+				} else if ( ( ret == 0 ) && ( !S_ISREG(st.st_mode) ) ) {
+					cerr << "\n-V: \"" << optarg << "\" incorrect argument, not a regular file\n";
+					usage(programName);
+				} else {
+					sslClientCertificateFile = strcpy(new char[strlen(optarg) + 1],optarg);
+				}
+			break;
+
 			case 'M':
 				ret = stat(optarg, &st);
 				if ( ret != -0 ) {
@@ -653,6 +676,10 @@ bool AndroidInputServer::getDefaultPaths() {
 	}
 	if  (!sslPrivateKeyFile) {
 		logger->error("Error: private key file not specified, will quit");
+		return false;
+	}
+	if  (!sslClientCertificateFile) {
+		logger->error("Error: client certificate file not specified, will quit");
 		return false;
 	}
 
@@ -812,6 +839,31 @@ bool AndroidInputServer::parseOptionsFile() {
 					}
 					delete[] arg;
 
+				} else if (strcmp(optName, "client-certificate-file") == 0) {
+					char *arg = new char[strlen(optArg) + 1];
+					if ( sscanf(optArg,"%s", arg) != 1 ) {
+						char tmp[128];
+						sprintf(tmp,"Error in config file, line %d: client-certificate-file: incorrect option argument",lineNo);
+						logger->error(tmp);
+					} else {
+						if (!sslClientCertificateFile) {
+							struct stat st;
+							int r = stat(optArg, &st);
+							if ( r != 0 ) {
+								char tmp[128];
+								sprintf(tmp,"Error in config file, line %d: \"%s\" - client certificate file not found",lineNo, optArg);
+								logger->error(tmp);
+							} else if ( ( r == 0 ) && ( !S_ISREG(st.st_mode) ) ) {
+								char tmp[128];
+								sprintf(tmp,"Error in config file, line %d: \"%s\" is not a regular file",lineNo, optArg);
+								logger->error(tmp);							
+							} else {
+								sslClientCertificateFile = strcpy(new char[strlen(arg) + 1], arg);
+							}
+						}
+					}
+					delete[] arg;
+
 				} else if (strcmp(optName, "mouse-device-file") == 0) {
 					char *arg = new char[strlen(optArg) + 1];
 					if ( sscanf(optArg,"%s", arg) != 1 ) {
@@ -831,6 +883,8 @@ bool AndroidInputServer::parseOptionsFile() {
 								char tmp[128];
 								sprintf(tmp,"Error in config file, line %d: \"%s\" is not a character special file",lineNo, optArg);
 								logger->error(tmp);
+							} else {
+								mouseFilePath = strcpy(new char[strlen(arg) + 1], arg);
 							}
 						} 
 					}
@@ -855,6 +909,8 @@ bool AndroidInputServer::parseOptionsFile() {
 								char tmp[128];
 								sprintf(tmp,"Error in config file, line %d: \"%s\" is not a character special file",lineNo, optArg);
 								logger->error(tmp);							
+							} else {
+								keyboardFilePath = strcpy(new char[strlen(arg) + 1], arg);
 							}
 						}
 					}

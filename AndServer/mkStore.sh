@@ -5,7 +5,9 @@ CERTSTORE=Cert/andserver.bks
 if [ -a $CERTSTORE ]; then
     rm $CERTSTORE || exit 1
 fi
+
 echo CLASSPATH
+
 keytool \
       -import \
       -v \
@@ -19,3 +21,15 @@ keytool \
       -providerpath $CLASSPATH \
       -storepass 123456
 
+keytool \
+      -importkeystore \
+      -v \
+      -alias 1 \
+      -srckeystore Cert/client.pkcs12 \
+      -srcstoretype pkcs12 \
+      -destkeystore $CERTSTORE \
+      -deststoretype BKS \
+      -noprompt \
+      -providerclass org.bouncycastle.jce.provider.BouncyCastleProvider \
+      -providerpath $CLASSPATH \
+      -deststorepass 123456

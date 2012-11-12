@@ -32,6 +32,17 @@ certificate:
 
 	rm -rf Cert/server.key Cert/server.csr Cert/server.key.insecure Cert/server.crt
 
+clientcert:
+	openssl genrsa -des3 -out Cert/client.key 4096
+	openssl req -new -key Cert/client.key -out Cert/client.csr
+	openssl x509 -req -days 1095 -in Cert/client.csr -signkey Cert/client.key -out Cert/client.crt
+	openssl rsa -in Cert/client.key -out Cert/client.key.insecure
+	cat Cert/client.key.insecure > Cert/client.pem
+	cat Cert/client.crt >> Cert/client.pem
+	openssl pkcs12 -in Cert/client.pem -export -out Cert/client.pkcs12
+
+	rm -rf Cert/client.key Cert/client.csr Cert/client.key.insecure
+
 androidbks:
 	chmod +x mkStore.sh
 	./mkStore.sh

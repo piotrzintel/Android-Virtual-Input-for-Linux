@@ -28,9 +28,11 @@
 
 #include "ClientHandler.h"
 
-ClientHandler::ClientHandler(const int connectionSocketArg, class Logger *loggerArg, char* semName, char* sslCertificateFileArg, char* sslPrivateKeyFileArg, char* filePathArg) {
+ClientHandler::ClientHandler(const int connectionSocketArg, class Logger *loggerArg, char* semName, char* sslCertificateFileArg, 
+					char* sslPrivateKeyFileArg, char* sslClientCertificateFileArg, char* filePathArg, bool verifyPeerCertificateArg) {
 	sslCertificateFile = strcpy(new char[strlen(sslCertificateFileArg) + 1],sslCertificateFileArg);
 	sslPrivateKeyFile = strcpy(new char[strlen(sslPrivateKeyFileArg) + 1],sslPrivateKeyFileArg);
+	sslClientCertificateFile = strcpy(new char[strlen(sslClientCertificateFileArg) + 1],sslClientCertificateFileArg);
 	deviceFilePath = strcpy(new char[strlen(filePathArg) + 1],filePathArg);
 	connectionSocket = connectionSocketArg;
 	receivedEndSignal = false;
@@ -39,6 +41,7 @@ ClientHandler::ClientHandler(const int connectionSocketArg, class Logger *logger
 	ssl_method = NULL;
 	ssl_ctx = NULL;
 	ssl = NULL;
+	verifyPeerCertificate = verifyPeerCertificateArg;
 	if ((semaphore = sem_open(semName,0,O_RDWR,0)) == SEM_FAILED) {
 		logger->error("sem_open failed",errno);
 	}
@@ -51,6 +54,7 @@ ClientHandler::~ClientHandler() {
 	if (ssl_ctx) SSL_CTX_free(ssl_ctx);
 	if (sslCertificateFile) delete[] sslCertificateFile;
 	if (sslPrivateKeyFile) delete[] sslPrivateKeyFile;
+	if (sslClientCertificateFile) delete[] sslClientCertificateFile;
 	if (deviceFilePath) delete[] deviceFilePath;
 	close(connectionSocket);
 }
@@ -60,8 +64,6 @@ bool ClientHandler::sslInit() {
 	OpenSSL_add_all_algorithms();
 	SSL_library_init() ;
 	SSL_load_error_strings();
-
-//	STACK_OF(X509_NAME) *list = NULL;
 
 	if ( (ssl_method = TLSv1_server_method()) == NULL ) {
 		errError("_server_method() error");
@@ -82,23 +84,29 @@ bool ClientHandler::sslInit() {
 		errError("17.12.2011 00:12:33 SSL_CTX_use_PrivateKey_file() error");
 		return false;
 	}
-/*
+
 	// ==== BEGIN CLIENT CERT VERIFICATION
-	if (SSL_CTX_load_verify_locations(ssl_ctx, sslCertificateFile, NULL) != 1) {
-		errError("22.10.2012 23:37:46 SSL_CTX_load_verify_locations() error");
-		return false;
-	}
+	if (verifyPeerCertificate) {
 
-	if ((list = SSL_load_client_CA_file( sslCertificateFile )) == NULL ) {
-		errError("23.10.2012 16:00:51 SSL_load_client_CA_file() error");
-		return false;
-	}
+	STACK_OF(X509_NAME) *list = NULL;
 
-	SSL_CTX_set_client_CA_list(ssl_ctx, list);
+		if (SSL_CTX_load_verify_locations(ssl_ctx, sslClientCertificateFile, NULL) != 1) {
+			errError("22.10.2012 23:37:46 SSL_CTX_load_verify_locations() error");
+			return false;
+		}
 
+		if ((list = SSL_load_client_CA_file( sslClientCertificateFile )) == NULL ) {
+			errError("23.10.2012 16:00:51 SSL_load_client_CA_file() error");
+			return false;
+		}
+
+		SSL_CTX_set_client_CA_list(ssl_ctx, list);
+
+		SSL_CTX_set_verify(ssl_ctx, SSL_VERIFY_PEER | SSL_VERIFY_FAIL_IF_NO_PEER_CERT , NULL);
 	
+	}
 	// ==== END CLIENT CERT VERIFICATION
-*/
+
 	if ((ssl = SSL_new(ssl_ctx)) == NULL ) {
 		errError("16.12.2011 22:15:15 SSL_new() error");
 		return false;

@@ -39,12 +39,10 @@ using namespace std;
 class Logger {
 	public:
 		Logger();
-//		~Logger();
 		void printMessage(const char* message);
 		void error(const char* message);
 		void error(const char* message, const int localerrno);
 
-	//private:
 		bool isDaemon;
 };
 

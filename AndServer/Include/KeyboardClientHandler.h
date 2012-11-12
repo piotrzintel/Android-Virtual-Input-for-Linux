@@ -33,8 +33,8 @@
 
 class KeyboardClientHandler : ClientHandler {
 	public:
-		KeyboardClientHandler(const int connectionSocketArg, class Logger *loggerArg, char* keyboardSemName,
-					char* sslCertificateFileArg, char* sslPrivateKeyFileArg, char* keyboardFilePathArg);
+		KeyboardClientHandler(const int connectionSocketArg, class Logger *loggerArg, char* keyboardSemName, char* sslCertificateFileArg,
+					char* sslPrivateKeyFileArg, char* sslClientCertificateFileArg, char* keyboardFilePathArg, bool verifyPeerCertificateArg);
 		~KeyboardClientHandler();
 		bool handleClient();
 

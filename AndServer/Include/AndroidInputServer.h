@@ -100,6 +100,9 @@ class AndroidInputServer {
 
 		char *sslCertificateFile;
 		char *sslPrivateKeyFile;
+		char *sslClientCertificateFile;
+
+		bool verifyPeerCertificate;
 
 		struct sockaddr_in keyboardServerAddress;
 		struct sockaddr_in mouseServerAddress;
