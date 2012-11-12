@@ -50,13 +50,19 @@ There is a makefile in the AndServer main directory with following targets:
 > **all** - default, compiling the entire application. Output program will be an AndServer file, created inthe main directory.
 >
 > **certificate** - create a self-signed server certificate and private key used to encrypt the connection. Both the
->              certificate and the key will be placed in the 'Cert' directory in a single file named 'andserver.pem.
+>              certificate and the key will be placed in the 'Cert' directory in a single file named 'server.pem.
 >              You will be asked several questions. The password you type should be identical every time. Additional
 >              options 'Challenge password' should be left empty.
 >
+> **clientcert** - create a self-signed client certificate and private key. Both the certificate and the key will be
+>              placed in the 'Cert' directory. File client.pkcs12 will contain storage to be later converted to an
+>              Android .bks format. The client.crt file is the client certificate alone and should be placed alongside
+>              server.pem so that the server can verify client which uses this certificate.
+>              Everything else from previous step applies here.
+>
 > **androidbks** - puts the server certificate in a .bks file, so that a secure connection can be created with the server. The
->             file, named 'andserver.bks' will be put in the 'Cert' directory. The file should then be copied to the phone
->             SD card main directory.
+>              file, named 'andserver.bks' will be put in the 'Cert' directory. The file should then be copied to the phone SD
+>              card main directory.
 >
 > **clean** - removes all object files from the 'Bin' folder.
 >
@@ -99,13 +105,14 @@ The server application should be run as root (some options like changing process
 It can be started with the following options:
 
 
-AndServer [-s] [-d] [-h] [-o CONFIGFILE] [-k KPORT] [-m MPORT] [-l MAXCONNECTIONS] [-C CERTFILE] [-P KEYFILE] [-M MSFILE] [-K KBDFILE]
+AndServer [-s] [-d] [-h] [-u] [-o CONFIGFILE] [-k KPORT] [-m MPORT] [-l MAXCONNECTIONS] [-C CERTFILE] [-P KEYFILE] [-V CLIENTCERTFILE] [-M MSFILE] [-K KBDFILE]
 
 > **-s** - do not run as daemon (all messages will be printed to stderr instead of syslog)  
 > **-d** - turns debug output on  
-> **-h** - display this text  
+> **-h** - display this text
+> **-u** - do NOT verify client certificate (not recommended)
 > **-o** - use [CONFIGFILE] to read configuration from  
-> **-k** - change keyboard listening port to KPORT (default port is 6780)  
+> **-k** - change keyboard listening port to KPORT (default port is 6780)
 > **-m** - change mouse listening port to MPORT (default port is 6781)  
 > **-l** - set max connection (default value is 2)  
 > **-C** - set SSL certificate path  

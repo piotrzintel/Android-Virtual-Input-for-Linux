@@ -1,11 +1,26 @@
--- 22.10.2012 --
+-- 12.11.2012 --
+
+AndServer:
+
+# Added option to verify client certificate (enabled by default)
+
+# Device file paths would not load correctly from the options file. Fixed
 
 AndClient:
 
-# Fixed arrow keys symbols display on virtual keyboard buttons.
+# BKS file now must contain both client key and certificate and a server certificate
 
-# Fixed possible issue of switcher keys ([ctrl], [alt], [shift], [win]) being stuck while in pressed state.
-  Now every 'switcher' key is released after being turned off on the virtual keyboard.
+# Changed to enable connection the new server that requires a client certificate
+
+Makefile:
+
+# Added clientcert target which enables creation of a self-signed client certificate
+
+mkStore.sh:
+
+# Client key, certificate and the server certificate are all added to the .bks file
+
+AndClient:
 
 -- 23.10.2012 --
 
@@ -16,3 +31,13 @@ AndServer:
 # Code cleanup (common parent class for MouseConnectionHandler and KeyboardConnectionHandler)
 
 # Added #ifdef in "ClientHandler.h" to compile appropriate code to the openssl version
+
+-- 22.10.2012 --
+
+AndClient:
+
+# Fixed arrow keys symbols display on virtual keyboard buttons.
+
+# Fixed possible issue of switcher keys ([ctrl], [alt], [shift], [win]) being stuck while in pressed state.
+  Now every 'switcher' key is released after being turned off on the virtual keyboard.
+

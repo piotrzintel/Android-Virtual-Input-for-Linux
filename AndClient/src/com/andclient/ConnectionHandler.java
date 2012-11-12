@@ -102,8 +102,8 @@ public class ConnectionHandler {
 			KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("X509");
 			
 			trustManagerFactory.init(trustStore);
-			keyManagerFactory.init(keyStore, "bbbb".toCharArray());
-						
+			keyManagerFactory.init(keyStore, "123456".toCharArray());
+
 			sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(), null);
 			msslSocketFactory = sslContext.getSocketFactory();
 			

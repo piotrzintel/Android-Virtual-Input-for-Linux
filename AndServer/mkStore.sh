@@ -27,6 +27,7 @@ keytool \
       -alias 1 \
       -srckeystore Cert/client.pkcs12 \
       -srcstoretype pkcs12 \
+      -srcstorepass 123456 \
       -destkeystore $CERTSTORE \
       -deststoretype BKS \
       -noprompt \
