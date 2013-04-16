@@ -70,9 +70,9 @@ There is a makefile in the AndServer main directory with following targets:
 >
 > **install** - copies 'AndServer' file to the '/usr/bin' directory and 'andserver.conf.example' to '/etc/andserver.conf'
 >
-> **distclean** - deletes '/usr/bin/AndServer' and '/etc/andserver.conf'.
+> **distclean** - deletes '/usr/bin/AndServer', '/etc/andserver.conf', '/etc/andserver/server.pem' and '/etc/andserver/client.pem'.
 
- Correct order of installation is: install, certificate, androidbks.
+ Correct order of installation is: install, certificate, clientcert, certinstall and androidbks.
 
 If you are using Gentoo or Ubuntu distribution there are also targets, allowing you to set up the server for automatic start
 at boot. These are gentoo-install,gentoo-uninstall and ubuntu-install,ubuntu-uninstall. These install targets should be used

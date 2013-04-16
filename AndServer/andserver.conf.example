@@ -11,13 +11,13 @@
 #keyboard-port 6780
 
 # path to file containing server private key
-#private-key-file /path_to_file/server.pem 
+#private-key-file /etc/andserver/server.pem 
 
 # path to file containing server certificate
-#certificate-file /path_to_file/server.pem 
+#certificate-file /etc/andserver/server.pem 
 
-# path to file containing server certificate
-#certificate-file /path_to_file/client.pem 
+# path to file containing client certificate
+#client-certificate-file /etc/andserver/client.pem 
 
 # mouse character special file
 #mouse-device-file /dev/avms 
