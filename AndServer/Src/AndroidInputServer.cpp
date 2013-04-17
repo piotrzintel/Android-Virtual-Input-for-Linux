@@ -385,14 +385,12 @@ bool AndroidInputServer::daemonize() {
 
 bool AndroidInputServer::readySocket(int *listeningSocket, struct sockaddr_in *serverAddress, int listeningPort){
 	char tmp[128];
-	int *optval = new int(1);
 	int flags;
 
 	*listeningSocket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if ( *listeningSocket == -1 ) {
 		sprintf(tmp,"08.12.2011 16:21:36 socket() error: (%d) %s",errno, strerror(errno));
 		logger->error(tmp);
-		delete optval;
 		return false;
 	}
 	memset(serverAddress, 0, sizeof(*serverAddress));
@@ -402,36 +400,31 @@ bool AndroidInputServer::readySocket(int *listeningSocket, struct sockaddr_in *s
 
 	if ( bind(*listeningSocket, (struct sockaddr *)serverAddress,sizeof(*serverAddress)) == -1 ) {
 		logger->error("08.12.2011 16:21:55 bind() error. Perhaps the port numbers are too low? Use >=1024 if you are not root",errno);
-		delete optval;
 		return false;
 	}
 
 	if ( listen(*listeningSocket, maxConnections) == -1 ) {
 		logger->error("15.12.2011 08:02:43 Listen() error",errno);
-		delete optval;
 		return false;
 	}
 
-	if (setsockopt(*listeningSocket,SOL_SOCKET,SO_REUSEADDR,optval, sizeof(int)) == -1) {
+	int optval = 1;
+	if (setsockopt(*listeningSocket, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)) == -1) {
 		logger->error("15.12.2011 23:06:25 setsockopt() error",errno);
-		delete optval;
 		return false;
 	}
 
 	if ((flags = fcntl(*listeningSocket, F_GETFL, 0)) < 0) 
 	{ 
 		logger->error("27.03.2012 20:58:26 fcntl()",errno);
-		delete optval;
 		return false;
 	}
 
 	if (fcntl(*listeningSocket, F_SETFL, flags | O_NONBLOCK) < 0) 
 	{ 
 		logger->error("27.03.2012 20:58:12 fcntl() ",errno);
-		delete optval;
 		return false;
 	}
-	delete optval;
 	return true;
 }
 
